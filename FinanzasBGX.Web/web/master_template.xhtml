@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <h:head>
+        <h:outputStylesheet name="css/furatto.css"/>
+        <h:outputStylesheet name="css/normalize.css"/>
+        <h:outputStylesheet name="css/font-awesome.css"/>
+        <h:outputStylesheet name="css/examples.css"/>
+        <h:outputLink rel="shortcut icon" value="img/favicon.ico"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+       <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no"/>
+        <h:outputStylesheet name="css/jsfcrud.css"/>
+    </h:head>
+    <h:body>
+        <div class="panels ">
+    <div class="panel panel-left">
+    </div>
+   </div> 
+   
+        <ui:insert name="menu">Default Menu</ui:insert>
+        
+        <ui:insert name="content"/>
+        
+        <ui:insert name="footer">Default Footer</ui:insert>
+        
+    </h:body>
+<script src="resources/js/jquery.js"></script>
+<script src="resources/js/furatto.min.js"></script>
+</html>
