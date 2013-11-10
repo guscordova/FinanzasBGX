@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListCompraComponenteTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:outputText escape="false" value="#{bundle.ListCompraComponenteEmpty}" rendered="#{compraComponenteController.items.rowCount == 0}"/>
+                <h:panelGroup rendered="#{compraComponenteController.items.rowCount > 0}">
+                    <h:outputText value="#{compraComponenteController.pagination.pageFirstItem + 1}..#{compraComponenteController.pagination.pageLastItem + 1}/#{compraComponenteController.pagination.itemsCount}"/>&nbsp;
+                    <h:commandLink action="#{compraComponenteController.previous}" value="#{bundle.Previous} #{compraComponenteController.pagination.pageSize}" rendered="#{compraComponenteController.pagination.hasPreviousPage}"/>&nbsp;
+                    <h:commandLink action="#{compraComponenteController.next}" value="#{bundle.Next} #{compraComponenteController.pagination.pageSize}" rendered="#{compraComponenteController.pagination.hasNextPage}"/>&nbsp;
+                    <h:dataTable value="#{compraComponenteController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompraComponenteTitle_cantidad}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.cantidad}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompraComponenteTitle_costo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.costo}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompraComponenteTitle_compra}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.compra}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListCompraComponenteTitle_componente}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.componente}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="&nbsp;"/>
+                            </f:facet>
+                            <h:commandLink action="#{compraComponenteController.prepareView}" value="#{bundle.ListCompraComponenteViewLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{compraComponenteController.prepareEdit}" value="#{bundle.ListCompraComponenteEditLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{compraComponenteController.destroy}" value="#{bundle.ListCompraComponenteDestroyLink}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+                <br />
+                <h:commandLink action="#{compraComponenteController.prepareCreate}" value="#{bundle.ListCompraComponenteCreateLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ListCompraComponenteIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

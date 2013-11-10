@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ViewPedidoComponenteTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{bundle.ViewPedidoComponenteLabel_cantidad}"/>
+                    <h:outputText value="#{pedidoComponenteController.selected.cantidad}" title="#{bundle.ViewPedidoComponenteTitle_cantidad}"/>
+                    <h:outputText value="#{bundle.ViewPedidoComponenteLabel_pedido}"/>
+                    <h:outputText value="#{pedidoComponenteController.selected.pedido}" title="#{bundle.ViewPedidoComponenteTitle_pedido}"/>
+                    <h:outputText value="#{bundle.ViewPedidoComponenteLabel_componente}"/>
+                    <h:outputText value="#{pedidoComponenteController.selected.componente}" title="#{bundle.ViewPedidoComponenteTitle_componente}"/>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{pedidoComponenteController.destroyAndView}" value="#{bundle.ViewPedidoComponenteDestroyLink}"/>
+                <br />
+                <br />
+                <h:link outcome="Edit" value="#{bundle.ViewPedidoComponenteEditLink}"/>
+                <br />
+                <h:commandLink action="#{pedidoComponenteController.prepareCreate}" value="#{bundle.ViewPedidoComponenteCreateLink}" />
+                <br />
+                <h:commandLink action="#{pedidoComponenteController.prepareList}" value="#{bundle.ViewPedidoComponenteShowAllLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ViewPedidoComponenteIndexLink}"/>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

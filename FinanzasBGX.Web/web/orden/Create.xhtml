@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateOrdenTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateOrdenLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{ordenController.selected.id}" title="#{bundle.CreateOrdenTitle_id}" required="true" requiredMessage="#{bundle.CreateOrdenRequiredMessage_id}"/>
+                    <h:outputLabel value="#{bundle.CreateOrdenLabel_fecAlta}" for="fecAlta" />
+                    <h:inputText id="fecAlta" value="#{ordenController.selected.fecAlta}" title="#{bundle.CreateOrdenTitle_fecAlta}" required="true" requiredMessage="#{bundle.CreateOrdenRequiredMessage_fecAlta}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateOrdenLabel_fecEntrega}" for="fecEntrega" />
+                    <h:inputText id="fecEntrega" value="#{ordenController.selected.fecEntrega}" title="#{bundle.CreateOrdenTitle_fecEntrega}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateOrdenLabel_totalPago}" for="totalPago" />
+                    <h:inputText id="totalPago" value="#{ordenController.selected.totalPago}" title="#{bundle.CreateOrdenTitle_totalPago}" required="true" requiredMessage="#{bundle.CreateOrdenRequiredMessage_totalPago}"/>
+                    <h:outputLabel value="#{bundle.CreateOrdenLabel_comentarios}" for="comentarios" />
+                    <h:inputText id="comentarios" value="#{ordenController.selected.comentarios}" title="#{bundle.CreateOrdenTitle_comentarios}" />
+                    <h:outputLabel value="#{bundle.CreateOrdenLabel_estatusId}" for="estatusId" />
+                    <h:selectOneMenu id="estatusId" value="#{ordenController.selected.estatusId}" title="#{bundle.CreateOrdenTitle_estatusId}" required="true" requiredMessage="#{bundle.CreateOrdenRequiredMessage_estatusId}">
+                        <f:selectItems value="#{estatusController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreateOrdenLabel_clienteId}" for="clienteId" />
+                    <h:selectOneMenu id="clienteId" value="#{ordenController.selected.clienteId}" title="#{bundle.CreateOrdenTitle_clienteId}" required="true" requiredMessage="#{bundle.CreateOrdenRequiredMessage_clienteId}">
+                        <f:selectItems value="#{clienteController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{ordenController.create}" value="#{bundle.CreateOrdenSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{ordenController.prepareList}" value="#{bundle.CreateOrdenShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateOrdenIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

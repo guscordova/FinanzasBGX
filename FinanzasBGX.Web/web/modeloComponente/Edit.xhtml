@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.EditModeloComponenteTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.EditModeloComponenteLabel_cantidad}" for="cantidad" />
+                    <h:inputText id="cantidad" value="#{modeloComponenteController.selected.cantidad}" title="#{bundle.EditModeloComponenteTitle_cantidad}" required="true" requiredMessage="#{bundle.EditModeloComponenteRequiredMessage_cantidad}"/>
+                    <h:outputLabel value="#{bundle.EditModeloComponenteLabel_modelo}" for="modelo" />
+                    <h:selectOneMenu id="modelo" value="#{modeloComponenteController.selected.modelo}" title="#{bundle.EditModeloComponenteTitle_modelo}" required="true" requiredMessage="#{bundle.EditModeloComponenteRequiredMessage_modelo}">
+                        <f:selectItems value="#{modeloController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.EditModeloComponenteLabel_componente}" for="componente" />
+                    <h:selectOneMenu id="componente" value="#{modeloComponenteController.selected.componente}" title="#{bundle.EditModeloComponenteTitle_componente}" required="true" requiredMessage="#{bundle.EditModeloComponenteRequiredMessage_componente}">
+                        <f:selectItems value="#{componenteController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <h:commandLink action="#{modeloComponenteController.update}" value="#{bundle.EditModeloComponenteSaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundle.EditModeloComponenteViewLink}"/>
+                <br />
+                <h:commandLink action="#{modeloComponenteController.prepareList}" value="#{bundle.EditModeloComponenteShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.EditModeloComponenteIndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

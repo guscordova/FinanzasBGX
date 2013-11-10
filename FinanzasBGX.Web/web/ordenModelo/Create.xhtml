@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateOrdenModeloTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateOrdenModeloLabel_cantidad}" for="cantidad" />
+                    <h:inputText id="cantidad" value="#{ordenModeloController.selected.cantidad}" title="#{bundle.CreateOrdenModeloTitle_cantidad}" required="true" requiredMessage="#{bundle.CreateOrdenModeloRequiredMessage_cantidad}"/>
+                    <h:outputLabel value="#{bundle.CreateOrdenModeloLabel_fabricadas}" for="fabricadas" />
+                    <h:inputText id="fabricadas" value="#{ordenModeloController.selected.fabricadas}" title="#{bundle.CreateOrdenModeloTitle_fabricadas}" required="true" requiredMessage="#{bundle.CreateOrdenModeloRequiredMessage_fabricadas}"/>
+                    <h:outputLabel value="#{bundle.CreateOrdenModeloLabel_orden}" for="orden" />
+                    <h:selectOneMenu id="orden" value="#{ordenModeloController.selected.orden}" title="#{bundle.CreateOrdenModeloTitle_orden}" required="true" requiredMessage="#{bundle.CreateOrdenModeloRequiredMessage_orden}">
+                        <f:selectItems value="#{ordenController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreateOrdenModeloLabel_modelo}" for="modelo" />
+                    <h:selectOneMenu id="modelo" value="#{ordenModeloController.selected.modelo}" title="#{bundle.CreateOrdenModeloTitle_modelo}" required="true" requiredMessage="#{bundle.CreateOrdenModeloRequiredMessage_modelo}">
+                        <f:selectItems value="#{modeloController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{ordenModeloController.create}" value="#{bundle.CreateOrdenModeloSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{ordenModeloController.prepareList}" value="#{bundle.CreateOrdenModeloShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateOrdenModeloIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
