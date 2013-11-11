@@ -7,7 +7,6 @@
     <ui:define name="menu">
         <ui:include src="/menu.xhtml" />
     </ui:define>
-   
     <ui:define name="content">
         <br/>
         <br/>
@@ -67,11 +66,12 @@
        <!--
         </div>
        -->
-        <div class="col-2">
+        <div class="col-9">
             <h1>
                 <ui:insert name="title">Default Title</ui:insert>
             </h1>
-            <ui:insert name="body"></ui:insert>
+            <ui:insert name="body">
+            </ui:insert>
         </div>
     </ui:define>
     <ui:define name="footer">
