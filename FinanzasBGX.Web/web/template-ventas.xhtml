@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+<ui:composition template="/master_template.xhtml">
+    <ui:define name="menu">
+        <ui:include src="/menu.xhtml" />
+    </ui:define>
+   
+    <ui:define name="content">
+        <br/>
+        <br/>
+        <div class="col-3">
+        <!-- Navigation sidebar -->
+        <div class="docs-sidebar">
+            <br/>
+            <ul class="nav nav-bordered">
+                <li>
+                <h:form>
+                    <h:commandLink action="/curso/List" value="por Mes"/>
+                </h:form>
+                </li>
+                <li>
+                <h:form>
+                    <h:commandLink action="/departamento/List" value="por Distribuidor"/>
+                </h:form>
+                </li>
+                <li>
+                <h:form>
+                    <h:commandLink action="/departamento/List" value="Gráficas"/>
+                </h:form>
+                </li>
+            </ul>
+        </div>
+        <!-- Navigation sidebar -->
+        </div>
+       
+        <div class="col-2">
+            <h1>
+                <ui:insert name="title">Ventas</ui:insert>
+            </h1>
+            <ui:insert name="body"></ui:insert>
+        </div>
+    </ui:define>
+    <ui:define name="footer">
+        <ui:include src="/footer.xhtml" />
+    </ui:define>
+</ui:composition>
+</html>
