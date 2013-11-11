@@ -14,12 +14,19 @@
           <ul class="nav docs-navbar-menu">
             <li><a class="brand" href="index.xhtml">BGX</a></li>
             <li class="dropdown">
-                <h:link class="dropdown-toggle" value="Ventas">
-                </h:link>
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Ventas<b class="caret bottom-up"></b></a>
+              <ul class="dropdown-menu bottom-up pull-right">
+                <li><h:link class="dropdown-toggle" value="por Mes"></h:link></li>
+                <li><h:link class="dropdown-toggle" value="por Distribuidor"></h:link></li>
+              </ul>
             </li>
-             <li class="dropdown">
-                <h:link class="dropdown-toggle" value="Compras">
-                </h:link>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Compras<b class="caret bottom-up"></b></a>
+              <ul class="dropdown-menu bottom-up pull-right">
+                <li><h:link class="dropdown-toggle" value="por Mes"></h:link></li>
+                <li><h:link class="dropdown-toggle" value="por Pieza"></h:link></li>
+                    <li><h:link class="dropdown-toggle" value="por Proveedor"></h:link></li>
+              </ul>
             </li>
             <li class="">
                 <h:link class="dropdown-toggle" value="Pendiente por Cobrar">
