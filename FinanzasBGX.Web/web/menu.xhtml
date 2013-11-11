@@ -12,32 +12,25 @@
       <div class="nav-collapse collapse">
         <nav id="menu">
           <ul class="nav docs-navbar-menu">
-            <li><a class="brand" href="index.xhtml">BGX: Finanzas</a></li>
+            <li><h:link class="brand" outcome="/index.xhtml">BGX: Finanzas</h:link></li>
             <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Ventas<b class="caret bottom-up"></b></a>
-              <ul class="dropdown-menu bottom-up pull-right">
-                <li><h:link class="dropdown-toggle" value="por Mes"></h:link></li>
-                <li><h:link class="dropdown-toggle" value="por Distribuidor"></h:link></li>
-              </ul>
+                <h:link value="Ventas">
+                </h:link>
             </li>
-             <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Compras<b class="caret bottom-up"></b></a>
-              <ul class="dropdown-menu bottom-up pull-right">
-                <li><h:link class="dropdown-toggle" value="por Mes"></h:link></li>
-                <li><h:link class="dropdown-toggle" value="por Pieza"></h:link></li>
-                    <li><h:link class="dropdown-toggle" value="por Proveedor"></h:link></li>
-              </ul>
-            </li>
-            <li class="">
-                <h:link class="dropdown-toggle" value="Pendiente por Cobrar">
+            <li class="dropdown">
+                <h:link value="Compras">
                 </h:link>
             </li>
             <li class="">
-                <h:link class="dropdown-toggle" value="Pendiente por Producir">
+                <h:link value="Pendiente por Cobrar">
                 </h:link>
             </li>
             <li class="">
-                <h:link class="dropdown-toggle" value="Inventario">
+                <h:link value="Pendiente por Producir">
+                </h:link>
+            </li>
+            <li class="">
+                <h:link value="Inventario">
                 </h:link>
             </li>
           </ul>
