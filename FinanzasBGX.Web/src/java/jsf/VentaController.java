@@ -22,6 +22,7 @@ import javax.faces.model.SelectItem;
 @SessionScoped
 public class VentaController implements Serializable {
 
+    private int currentYear;
     private Venta current;
     private DataModel items = null;
     @EJB
@@ -32,6 +33,20 @@ public class VentaController implements Serializable {
     public VentaController() {
     }
 
+    public void setCurrentYear(int year){
+        this.currentYear = year;
+    }
+    
+    public double getTotalSalesYear(){
+        return this.getFacade().getTotalSalesYear(this.currentYear);
+    }
+    
+    public double[] getTotalSalesMonth(){
+        return this.getFacade().getTotalSalesMonth(this.currentYear);
+    }
+    
+    
+    
     public Venta getSelected() {
         if (current == null) {
             current = new Venta();
@@ -158,8 +173,8 @@ public class VentaController implements Serializable {
         }
         return items;
     }
-
-    private void recreateModel() {
+    
+private void recreateModel() {
         items = null;
     }
 

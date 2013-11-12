@@ -5,9 +5,11 @@
 package session;
 
 import entities.Compra;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import utilidades.compraUtils;
 
 /**
  *
@@ -25,6 +27,18 @@ public class CompraFacade extends AbstractFacade<Compra> {
 
     public CompraFacade() {
         super(Compra.class);
+    }
+    
+    public double getTotalPurchasesYear(int year){
+        List<Compra> compras = this.findAll();
+        compraUtils cu = new compraUtils(compras);
+        return cu.getYearPurchases(year);
+    }
+    
+    public double[] getTotalPurchasesMonth(int year){
+        List<Compra> compras = this.findAll();
+        compraUtils cu = new compraUtils(compras);
+        return cu.getMonthPurchases(year);
     }
     
 }

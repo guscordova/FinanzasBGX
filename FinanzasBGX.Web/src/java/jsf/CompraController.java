@@ -22,6 +22,7 @@ import javax.faces.model.SelectItem;
 @SessionScoped
 public class CompraController implements Serializable {
 
+    private int currentYear;
     private Compra current;
     private DataModel items = null;
     @EJB
@@ -30,6 +31,18 @@ public class CompraController implements Serializable {
     private int selectedItemIndex;
 
     public CompraController() {
+    }
+    
+    public void setCurrentYear(int year){
+        this.currentYear = year;
+    }
+    
+    public double getTotalPurchasesYear(){
+        return this.getFacade().getTotalPurchasesYear(this.currentYear);
+    }
+    
+    public double[] getTotalPurchasesMonth(){
+        return this.getFacade().getTotalPurchasesMonth(this.currentYear);
     }
 
     public Compra getSelected() {
