@@ -1,0 +1,15 @@
+/* 
+    Document   : MasterCss
+    Created on : Nov 13, 2013, 12:14:21 PM
+    Author     : robertogarza
+    Description:
+        Purpose of the stylesheet follows.
+*/
+.divIndicadores {
+    font-size: 30px;
+    margin-bottom: 2.5em;
+}
+
+.divDerechoIndicador {
+    margin-left: 6em;
+}

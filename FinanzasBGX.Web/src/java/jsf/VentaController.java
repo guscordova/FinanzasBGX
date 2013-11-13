@@ -29,7 +29,8 @@ public class VentaController implements Serializable {
     private session.VentaFacade ejbFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
-
+    private double totalSalesYear = 0.0;
+    
     public VentaController() {
     }
 
@@ -38,14 +39,13 @@ public class VentaController implements Serializable {
     }
     
     public double getTotalSalesYear(){
-        return this.getFacade().getTotalSalesYear(this.currentYear);
+        totalSalesYear  = this.getFacade().getTotalSalesYear(this.currentYear);
+        return totalSalesYear;
     }
     
     public double[] getTotalSalesMonth(){
         return this.getFacade().getTotalSalesMonth(this.currentYear);
     }
-    
-    
     
     public Venta getSelected() {
         if (current == null) {
