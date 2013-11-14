@@ -10,6 +10,7 @@ import entities.Cliente;
 import entities.Orden;
 import entities.Venta;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +37,10 @@ public class ventaUtils {
     public double getYearSales(int year){
         double acum = 0;
         for(Venta v:Ventas){
-            if(v.getFecCobro().getYear() == year){
-                acum +=v.getMonto()*v.getCantidad();
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(v.getFecCobro());
+            if(cal.get(Calendar.YEAR) == year){
+                acum += v.getMonto() * v.getCantidad();
             }
         }
      return acum;

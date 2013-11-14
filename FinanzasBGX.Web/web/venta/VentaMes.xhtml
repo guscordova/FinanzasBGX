@@ -10,7 +10,20 @@
         </ui:define>
         <ui:define name="body">
             <h:form>
-                <h:outputText value="#{ventaController.totalSalesYear}"/>
+                <h:outputText value="Año" />
+                <h:selectOneMenu value="#{ventaController.currentYear}">
+                        <f:selectItem itemValue="2013" itemLabel="2013" />
+   			<f:selectItem itemValue="2012" itemLabel="2012" />
+   			<f:selectItem itemValue="2011" itemLabel="2011" />
+                        <f:selectItem itemValue="2010" itemLabel="2010" />
+   		</h:selectOneMenu>
+                 <h:outputText value="Distribuidor" />
+                <h:selectOneMenu>               
+                    <f:selectItem itemValue="1" itemLabel="D1" />
+                    <f:selectItem itemValue="2" itemLabel="D2" />
+                    <f:selectItem itemValue="3" itemLabel="D3" />
+                </h:selectOneMenu>
+                 <h:commandLink  value="Buscar" immediate="true"/>
             </h:form>
         </ui:define>
     </ui:composition>

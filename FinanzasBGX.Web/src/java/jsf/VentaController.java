@@ -6,6 +6,8 @@ import jsf.util.PaginationHelper;
 import session.VentaFacade;
 
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -33,13 +35,17 @@ public class VentaController implements Serializable {
     
     public VentaController() {
     }
-
+    
+    public int getCurrentYear(){
+        return currentYear;
+    }
+    
     public void setCurrentYear(int year){
         this.currentYear = year;
     }
     
     public double getTotalSalesYear(){
-        totalSalesYear  = this.getFacade().getTotalSalesYear(this.currentYear);
+        totalSalesYear  = this.getFacade().getTotalSalesYear(Calendar.getInstance().get(Calendar.YEAR));
         return totalSalesYear;
     }
     
