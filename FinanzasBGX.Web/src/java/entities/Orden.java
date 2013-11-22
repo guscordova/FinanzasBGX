@@ -36,6 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Orden.findAll", query = "SELECT o FROM Orden o"),
+    @NamedQuery(name = "Orden.findPendientesProducir", query = "SELECT o FROM Orden o INNER JOIN o.estatusId e WHERE e.id < 5"),
     @NamedQuery(name = "Orden.findById", query = "SELECT o FROM Orden o WHERE o.id = :id"),
     @NamedQuery(name = "Orden.findByFecAlta", query = "SELECT o FROM Orden o WHERE o.fecAlta = :fecAlta"),
     @NamedQuery(name = "Orden.findByFecEntrega", query = "SELECT o FROM Orden o WHERE o.fecEntrega = :fecEntrega"),

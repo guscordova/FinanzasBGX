@@ -5,11 +5,11 @@
 package session;
 
 import entities.Compra;
-import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import utilidades.compraUtils;
+import utilidades.CompraCore;
+import utilidades.NumericTreeRow;
 
 /**
  *
@@ -19,26 +19,29 @@ import utilidades.compraUtils;
 public class CompraFacade extends AbstractFacade<Compra> {
     @PersistenceContext(unitName = "FinanzasBGX.WebPU")
     private EntityManager em;
+    //
+    private CompraCore cu;
 
+    public CompraFacade() {
+        super(Compra.class);
+        this.cu = new CompraCore();
+    }
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
 
-    public CompraFacade() {
-        super(Compra.class);
-    }
-    
     public double getTotalPurchasesYear(int year){
-        List<Compra> compras = this.findAll();
-        compraUtils cu = new compraUtils(compras);
-        return cu.getYearPurchases(year);
+        return this.cu.getYearPurchases(year);
     }
     
     public double[] getTotalPurchasesMonth(int year){
-        List<Compra> compras = this.findAll();
-        compraUtils cu = new compraUtils(compras);
-        return cu.getMonthPurchases(year);
+        return this.cu.getMonthPurchases(year);
+    }
+    
+    public NumericTreeRow getSupplierPurchases(int year){
+        return this.cu.getSupplierPurchases(year);
     }
     
 }

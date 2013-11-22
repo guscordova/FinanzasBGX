@@ -1,0 +1,99 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package utilidades;
+
+import entities.Compra;
+import entities.Venta;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.Root;
+import session.CompraFacade;
+
+/**
+ *
+ * @author Henry
+ */
+@Stateless
+public class CompraCore {
+
+    @PersistenceContext(unitName = "FinanzasBGX.WebPU")
+    private EntityManager em;
+
+    /*
+        Constructor
+    */
+    public CompraCore() {
+    }
+    
+    /*
+        Realiza una consulta, devuelve todas las compras de la base de datos,
+        el universo de compras C
+    */
+    public List<Compra> C(){
+        javax.persistence.criteria.CriteriaQuery cq = this.em.getCriteriaBuilder().createQuery();
+        Root<Compra> compra = cq.from(Compra.class);
+        cq.select(compra);
+        return this.em.createQuery(cq).getResultList();
+    }
+    
+    /*
+        Suma el costo total de todas las compras que pertenezcan
+        al año especificado como parametro
+    */
+    public double getYearPurchases(int year) {
+        double acum = 0;
+        for (Compra c : this.C()) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(c.getFecPago());
+            if (cal.get(Calendar.YEAR) == year) {
+                acum += c.getCostoTotal();
+            }
+        }
+        return acum;
+    }
+    
+    /*
+        Devuelve un arreglo de 12 elementos Double. Se obtiene el costo total de las compras
+        de cada mes en el año especificado, donde cada mes esta enumerado
+        en el arreglo de 0 a 11 (enero...diciembre)
+    */
+    public double[] getMonthPurchases(int year) {
+        double[] acum = new double[12];
+        for (Compra c : this.C()) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(c.getFecPago());
+            if (cal.get(Calendar.YEAR) == year) {
+                acum[cal.get(Calendar.MONTH)] += c.getCostoTotal();
+            }
+        }
+        return acum;
+    }
+    
+    /*
+        Devuelve un HashMap, donde la llave es el nombre del proveedor y el valor
+        asociado a la llave es el total de las compras en el año especificado para ese
+        proveedor
+    */
+    public NumericTreeRow getSupplierPurchases(int year) {
+        NumericTableSet acum = new NumericTableSet();
+        for (Compra c : this.C()) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(c.getFecPago());
+            if (cal.get(Calendar.YEAR) == year) {
+                String proveedor = c.getProveedorId().getId().toString();
+                double total = c.getCostoTotal();
+                acum.addValue(proveedor, total);
+            }
+        }
+        return acum.getSumRow();
+    }
+}
