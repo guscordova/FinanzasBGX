@@ -38,11 +38,11 @@ public class CompraController implements Serializable {
     }
     
     public double getTotalPurchasesYear(){
-        return this.getFacade().getTotalPurchasesYear(this.currentYear);
+        return this.getFacade().getYearPurchases(this.currentYear);
     }
     
     public double[] getTotalPurchasesMonth(){
-        return this.getFacade().getTotalPurchasesMonth(this.currentYear);
+        return this.getFacade().getMonthPurchases(this.currentYear);
     }
 
     public Compra getSelected() {

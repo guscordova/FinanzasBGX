@@ -29,11 +29,15 @@ public class VentaController implements Serializable {
     private DataModel items = null;
     @EJB
     private session.VentaFacade ejbFacade;
+    //
     private PaginationHelper pagination;
     private int selectedItemIndex;
     private double totalSalesYear = 0.0;
     
     public VentaController() {
+        double[] a = this.getFacade().getMonthSales(2013);
+        double[] b = this.getFacade().getPendienteCobrarMensual(2013);
+        System.out.println("Prueba!!!");
     }
     
     public int getCurrentYear(){
@@ -45,12 +49,12 @@ public class VentaController implements Serializable {
     }
     
     public double getTotalSalesYear(){
-        totalSalesYear  = this.getFacade().getTotalSalesYear(Calendar.getInstance().get(Calendar.YEAR));
+        totalSalesYear  = this.getFacade().getYearSales(Calendar.getInstance().get(Calendar.YEAR));
         return totalSalesYear;
     }
     
     public double[] getTotalSalesMonth(){
-        return this.getFacade().getTotalSalesMonth(this.currentYear);
+        return this.getFacade().getMonthSales(this.currentYear);
     }
     
     public Venta getSelected() {
