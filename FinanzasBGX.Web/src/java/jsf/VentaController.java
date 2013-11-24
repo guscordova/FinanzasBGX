@@ -7,8 +7,9 @@ import session.VentaFacade;
 
 import java.io.Serializable;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
@@ -19,12 +20,14 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import utilidades.Column;
 
 @Named("ventaController")
 @SessionScoped
 public class VentaController implements Serializable {
 
     private int currentYear;
+    private String currentMonth;
     private Venta current;
     private DataModel items = null;
     @EJB
@@ -33,11 +36,26 @@ public class VentaController implements Serializable {
     private PaginationHelper pagination;
     private int selectedItemIndex;
     private double totalSalesYear = 0.0;
+    private DataModel totalSalesMonth = null;
+    private DataModel totalSalesDistributorYear = null;
+    private double pendienteCobrarAnual = 0.0;
+    private DataModel pendienteCobrarMes = null;
     
     public VentaController() {
-        double[] a = this.getFacade().getMonthSales(2013);
-        double[] b = this.getFacade().getPendienteCobrarMensual(2013);
-        System.out.println("Prueba!!!");
+        //  Fijamos el año actual por defecto, si este no ha sido cambiado
+        this.currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        this.currentMonth = "*";
+    }
+    
+    @PostConstruct
+    public void init() {
+        /*currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        double[] totals1 = this.getFacade().getPendienteCobrarMensual(currentYear);
+        double[] totals2 = this.getFacade().getMonthSales(currentYear);
+        System.out.println("Current Year: " + currentYear);
+        for(double s : totals1){
+            System.out.println(s);
+        }*/
     }
     
     public int getCurrentYear(){
@@ -48,14 +66,49 @@ public class VentaController implements Serializable {
         this.currentYear = year;
     }
     
+    /*
+        Ventas
+    */
+    
+    /*
+        Generales
+    */
     public double getTotalSalesYear(){
-        totalSalesYear  = this.getFacade().getYearSales(Calendar.getInstance().get(Calendar.YEAR));
-        return totalSalesYear;
+        this.totalSalesYear  = this.getFacade().getYearSales(this.currentYear);
+        return this.totalSalesYear;
+    }
+
+    public List<Column> getTotalSalesMonth(){
+        List<Column> l = this.getFacade().getMonthSales(this.currentYear, this.currentMonth);
+        this.totalSalesMonth = new ListDataModel(l);
+        return l;
     }
     
-    public double[] getTotalSalesMonth(){
-        return this.getFacade().getMonthSales(this.currentYear);
+    /*
+        Por distribuidor
+    */
+    public List<Column> getTotalSalesDistributorYear(){
+        List<Column> l = this.getFacade().getDistributorSales(this.currentYear);
+        this.totalSalesDistributorYear = new ListDataModel(l);
+        return l;
     }
+    
+    /*
+        Pendiente por cobrar
+    */
+    
+    public double getPendienteCobrarAnual(){
+        this.pendienteCobrarAnual = this.getFacade().getPendienteCobrarAnual(currentYear);
+        return this.pendienteCobrarAnual;
+    }
+    
+    public List<Column> getPendienteCobrarMes(){
+        List<Column> l = this.getFacade().getPendienteCobrarMensual(this.currentYear, this.currentMonth);
+        this.pendienteCobrarMes = new ListDataModel(l);
+        return l;
+    }
+    
+    //
     
     public Venta getSelected() {
         if (current == null) {

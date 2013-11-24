@@ -6,6 +6,8 @@ import jsf.util.PaginationHelper;
 import session.CompraFacade;
 
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -17,20 +19,26 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import utilidades.Column;
 
 @Named("compraController")
 @SessionScoped
 public class CompraController implements Serializable {
 
     private int currentYear;
+    private String currentMonth;
     private Compra current;
     private DataModel items = null;
     @EJB
     private session.CompraFacade ejbFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
+    private double totalPurchasesYear = 0.0;
+    private DataModel totalPurchasesMonth = null;
 
     public CompraController() {
+        this.currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        this.currentMonth = "*";
     }
     
     public void setCurrentYear(int year){
@@ -38,11 +46,14 @@ public class CompraController implements Serializable {
     }
     
     public double getTotalPurchasesYear(){
-        return this.getFacade().getYearPurchases(this.currentYear);
+        this.totalPurchasesYear = this.getFacade().getYearPurchases(this.currentYear);
+        return this.totalPurchasesYear;
     }
     
-    public double[] getTotalPurchasesMonth(){
-        return this.getFacade().getMonthPurchases(this.currentYear);
+    public List<Column> getTotalPurchasesMonth(){
+        List<Column> l = this.getFacade().getMonthPurchases(this.currentYear, this.currentMonth);
+        this.totalPurchasesMonth = new ListDataModel(l);
+        return l;
     }
 
     public Compra getSelected() {

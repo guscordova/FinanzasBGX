@@ -11,6 +11,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.Root;
+import utilidades.Column;
+import utilidades.DateUtils;
 import utilidades.NumericTableSet;
 import utilidades.NumericTreeRow;
 
@@ -64,16 +66,20 @@ public class CompraFacade extends AbstractFacade<Compra> {
         de cada mes en el año especificado, donde cada mes esta enumerado
         en el arreglo de 0 a 11 (enero...diciembre)
     */
-    public double[] getMonthPurchases(int year) {
-        double[] acum = new double[12];
+    public List<Column> getMonthPurchases(int year, String month) {
+        NumericTableSet acum = new NumericTableSet();
         for (Compra c : this.C()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(c.getFecPago());
             if (cal.get(Calendar.YEAR) == year) {
-                acum[cal.get(Calendar.MONTH)] += c.getCostoTotal();
+                String strMonth = DateUtils.getMonth(Calendar.MONTH);
+                if(strMonth.equals(month) || month.equals("*")){
+                    double total = c.getCostoTotal();
+                    acum.addValue(strMonth, total);
+                }
             }
         }
-        return acum;
+        return acum.getSumRow().getDescendingColumns();
     }
     
     /*
@@ -81,7 +87,7 @@ public class CompraFacade extends AbstractFacade<Compra> {
         asociado a la llave es el total de las compras en el año especificado para ese
         proveedor
     */
-    public NumericTreeRow getSupplierPurchases(int year) {
+    public List<Column> getSupplierPurchases(int year) {
         NumericTableSet acum = new NumericTableSet();
         for (Compra c : this.C()) {
             Calendar cal = Calendar.getInstance();
@@ -92,7 +98,7 @@ public class CompraFacade extends AbstractFacade<Compra> {
                 acum.addValue(proveedor, total);
             }
         }
-        return acum.getSumRow();
+        return acum.getSumRow().getDescendingColumns();
     }
     
 }

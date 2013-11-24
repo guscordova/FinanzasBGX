@@ -13,6 +13,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.Root;
+import utilidades.Column;
+import utilidades.DateUtils;
 import utilidades.NumericTableSet;
 import utilidades.NumericTreeRow;
 
@@ -24,6 +26,7 @@ import utilidades.NumericTreeRow;
 public class VentaFacade extends AbstractFacade<Venta> {
     @PersistenceContext(unitName = "FinanzasBGX.WebPU")
     private EntityManager em;
+    //
     
     public VentaFacade() {
         super(Venta.class);
@@ -78,20 +81,28 @@ public class VentaFacade extends AbstractFacade<Venta> {
         }
         return salesSum;
     }
-
-    public double[] getMonthSales(int year) {
-        double[] salesSum = new double[12];
+    
+    public NumericTableSet getMonthSalesTable(int year, String month){
+        NumericTableSet salesSum = new NumericTableSet();
         for (Venta v : this.V()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(v.getFecCobro());
             if (cal.get(Calendar.YEAR) == year) {
-                salesSum[cal.get(Calendar.MONTH)] += v.getMonto() * v.getCantidad();
+                String strMonth = DateUtils.getMonth(Calendar.MONTH);
+                if(strMonth.equals(month) || month.equals("*")){
+                    double total = v.getMonto() * v.getCantidad();
+                    salesSum.addValue(strMonth, total);
+                }
             }
         }
         return salesSum;
     }
+
+    public List<Column> getMonthSales(int year, String month) {
+        return this.getMonthSalesTable(year, month).getSumRow().getDescendingColumns();
+    }
     
-    public NumericTreeRow getDistributorSales(int year) {
+    public NumericTableSet getDistributorSalesTable(int year) {
         NumericTableSet salesAcum = new NumericTableSet();
         for (Venta v : this.V()) {
             Calendar cal = Calendar.getInstance();
@@ -102,7 +113,11 @@ public class VentaFacade extends AbstractFacade<Venta> {
                 salesAcum.addValue(distribuidor, total);
             }
         }
-        return salesAcum.getSumRow();
+        return salesAcum;
+    }
+    
+    public List<Column> getDistributorSales(int year) {
+        return this.getDistributorSalesTable(year).getSumRow().getDescendingColumns();
     }
     
     /*
@@ -117,29 +132,31 @@ public class VentaFacade extends AbstractFacade<Venta> {
             if (cal.get(Calendar.YEAR) == year) {
                 orderSum += o.getTotalPago();
             }
-            
         }
         //  El monto total de las ordenes menos el monto que ha sido pagado
         return orderSum - this.getYearSales(year);
     }
 
-    public double[] getPendienteCobrarMensual(int year) {
-        double[] orderAcum = new double[12];
+    public List<Column> getPendienteCobrarMensual(int year, String month) {
+        NumericTableSet orderAcum = new NumericTableSet();
         for (Orden o : this.O()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(o.getFecAlta());
             if (cal.get(Calendar.YEAR) == year) {
-                orderAcum[cal.get(Calendar.MONTH)] += o.getTotalPago();
+                String strMonth = DateUtils.getMonth(Calendar.MONTH);
+                if(strMonth.equals(month) || month.equals("*")){
+                    double total = o.getTotalPago();
+                    orderAcum.addValue(strMonth, total);
+                }
             }
         }
         //  Obtengo las ventas mensuales por mes
-        double[] salesAcum = this.getMonthSales(year);
+        NumericTableSet salesAcum = this.getMonthSalesTable(year, month);
+        NumericTreeRow difference = orderAcum.getSumRow();
         //  Ahora, al monto total por mes de las ordenes, le resto las ventas totales
         //  de cada mes
-        for(int i = 0; i < orderAcum.length; i++){
-            orderAcum[i] = orderAcum[i] - salesAcum[i];
-        }
-        return orderAcum;
+        difference.substract(salesAcum.getSumRow());
+        return difference.getDescendingColumns();
     }
 
     public NumericTreeRow getPendienteCobrarDistribuidor(int year) {
@@ -156,7 +173,7 @@ public class VentaFacade extends AbstractFacade<Venta> {
         //  Realiza la sumatoria de los totales de las ordenesde cada uno de los distribuidores
         NumericTreeRow orderSum = acumOrder.getSumRow();
         //  A estos totales, restar los totales de las ventas realizadas por distribuidor
-        orderSum.substract(this.getDistributorSales(year));
+        orderSum.substract(this.getDistributorSalesTable(year).getSumRow());
         return orderSum;
     }
     
