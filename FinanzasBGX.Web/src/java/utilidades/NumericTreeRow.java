@@ -20,12 +20,14 @@ public class NumericTreeRow extends Row<Double>{
         this.tree = new TreeSet<>();
     }
     
-    public void substract(NumericTreeRow tr){
+    public NumericTreeRow substract(NumericTreeRow tr){
+        NumericTreeRow result = new NumericTreeRow();
         for(String col : tr.getColumns()){
             double myval = this.getValue(col);
             double trval = tr.getValue(col);
-            this.setValue(col, myval - trval);
+            result.setValue(col, myval - trval);
         }
+        return result;
     }
     
     public double getMaxValue(){

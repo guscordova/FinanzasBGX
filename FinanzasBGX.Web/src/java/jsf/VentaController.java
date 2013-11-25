@@ -28,6 +28,7 @@ public class VentaController implements Serializable {
 
     private int currentYear;
     private String currentMonth;
+    private String currentDistributor;
     private Venta current;
     private DataModel items = null;
     @EJB
@@ -40,22 +41,39 @@ public class VentaController implements Serializable {
     private DataModel totalSalesDistributorYear = null;
     private double pendienteCobrarAnual = 0.0;
     private DataModel pendienteCobrarMes = null;
+    private DataModel pendienteCobrarDistribuidor = null;
     
     public VentaController() {
         //  Fijamos el año actual por defecto, si este no ha sido cambiado
         this.currentYear = Calendar.getInstance().get(Calendar.YEAR);
         this.currentMonth = "*";
+        this.currentDistributor = "*";
     }
     
     @PostConstruct
     public void init() {
-        /*currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        double[] totals1 = this.getFacade().getPendienteCobrarMensual(currentYear);
-        double[] totals2 = this.getFacade().getMonthSales(currentYear);
-        System.out.println("Current Year: " + currentYear);
-        for(double s : totals1){
-            System.out.println(s);
-        }*/
+        System.out.println("Venta Controller test");
+        System.out.println("Default current year: " + this.currentYear);
+        System.out.println("Default current month: " + this.currentMonth);
+        System.out.println("Default current distributor: " + this.currentDistributor);
+        System.out.println("getTotalSalesYear: " + this.getTotalSalesYear());
+        System.out.println("getTotalSalesMonth: ");
+        for(Column c : this.getTotalSalesMonth()){
+            System.out.println(c.name + " " + c.value);
+        }
+        System.out.println("getTotalSalesDistributorYear: ");
+        for(Column c : this.getTotalSalesDistributorYear()){
+            System.out.println(c.name + " " + c.value);
+        }
+        System.out.println("getPendienteCobrarAnual: " + this.getPendienteCobrarAnual());
+        System.out.println("getPendienteCobrarMes: ");
+        for(Column c : this.getPendienteCobrarMes()){
+            System.out.println(c.name + " " + c.value);
+        }
+        System.out.println("getPendienteCobrarDistribuidor: ");
+        for(Column c : this.getPendienteCobrarDistribuidor()){
+            System.out.println(c.name + " " + c.value);
+        }
     }
     
     public int getCurrentYear(){
@@ -88,7 +106,7 @@ public class VentaController implements Serializable {
         Por distribuidor
     */
     public List<Column> getTotalSalesDistributorYear(){
-        List<Column> l = this.getFacade().getDistributorSales(this.currentYear);
+        List<Column> l = this.getFacade().getDistributorSales(this.currentYear, this.currentDistributor);
         this.totalSalesDistributorYear = new ListDataModel(l);
         return l;
     }
@@ -105,6 +123,12 @@ public class VentaController implements Serializable {
     public List<Column> getPendienteCobrarMes(){
         List<Column> l = this.getFacade().getPendienteCobrarMensual(this.currentYear, this.currentMonth);
         this.pendienteCobrarMes = new ListDataModel(l);
+        return l;
+    }
+    
+    public List<Column> getPendienteCobrarDistribuidor(){
+        List<Column> l = this.getFacade().getPendienteCobrarDistribuidor(this.currentYear, this.currentDistributor);
+        this.pendienteCobrarDistribuidor = new ListDataModel(l);
         return l;
     }
     

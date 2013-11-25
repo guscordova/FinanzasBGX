@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
@@ -27,6 +28,7 @@ public class CompraController implements Serializable {
 
     private int currentYear;
     private String currentMonth;
+    private String currentSupplier;
     private Compra current;
     private DataModel items = null;
     @EJB
@@ -39,6 +41,12 @@ public class CompraController implements Serializable {
     public CompraController() {
         this.currentYear = Calendar.getInstance().get(Calendar.YEAR);
         this.currentMonth = "*";
+        this.currentSupplier = "*";
+    }
+    
+     @PostConstruct
+    public void init() {
+     
     }
     
     public void setCurrentYear(int year){

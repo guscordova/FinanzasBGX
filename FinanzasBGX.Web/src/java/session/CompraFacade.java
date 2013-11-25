@@ -5,6 +5,7 @@
 package session;
 
 import entities.Compra;
+import entities.Proveedor;
 import java.util.Calendar;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -14,7 +15,6 @@ import javax.persistence.criteria.Root;
 import utilidades.Column;
 import utilidades.DateUtils;
 import utilidades.NumericTableSet;
-import utilidades.NumericTreeRow;
 
 /**
  *
@@ -62,12 +62,10 @@ public class CompraFacade extends AbstractFacade<Compra> {
     }
     
     /*
-        Devuelve un arreglo de 12 elementos Double. Se obtiene el costo total de las compras
-        de cada mes en el año especificado, donde cada mes esta enumerado
-        en el arreglo de 0 a 11 (enero...diciembre)
+        Por mes
     */
     public List<Column> getMonthPurchases(int year, String month) {
-        NumericTableSet acum = new NumericTableSet();
+        NumericTableSet acum = DateUtils.getDatedTableSet();
         for (Compra c : this.C()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(c.getFecPago());
@@ -87,15 +85,20 @@ public class CompraFacade extends AbstractFacade<Compra> {
         asociado a la llave es el total de las compras en el año especificado para ese
         proveedor
     */
-    public List<Column> getSupplierPurchases(int year) {
+    public List<Column> getSupplierPurchases(int year, String selectedSupplier) {
         NumericTableSet acum = new NumericTableSet();
         for (Compra c : this.C()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(c.getFecPago());
             if (cal.get(Calendar.YEAR) == year) {
-                String proveedor = c.getProveedorId().getId().toString();
-                double total = c.getCostoTotal();
-                acum.addValue(proveedor, total);
+                Proveedor proveedor = c.getProveedorId();
+                String proveedorID = proveedor.getId().toString();
+                if(selectedSupplier.equals(proveedorID) || selectedSupplier.equals("*")){
+                    String proveedorName = proveedor.getEmail();
+                    String key = proveedorID + " " + proveedorName;
+                    double total = c.getCostoTotal();
+                    acum.addValue(key, total);
+                }
             }
         }
         return acum.getSumRow().getDescendingColumns();

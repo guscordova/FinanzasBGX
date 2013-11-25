@@ -15,4 +15,12 @@ public class DateUtils {
                          "noviembre", "diciembre"};
         return months[month];
     }
+    
+    public static NumericTableSet getDatedTableSet(){
+        NumericTableSet ts = new NumericTableSet();
+        for(int i = 0; i < 12; i++){
+            ts.addValue(DateUtils.getMonth(i), (double)0);
+        }
+        return ts;
+    }
 }
