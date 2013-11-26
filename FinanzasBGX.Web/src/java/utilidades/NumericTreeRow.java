@@ -40,6 +40,15 @@ public class NumericTreeRow extends Row<Double>{
         }
         return maxValue;
     }
+    
+    public double getSum(){
+        double sum = 0;
+        for(String column : this.getColumns()){
+            double value = this.getValue(column);
+            sum = sum + value;
+        }
+        return sum;
+    }
 
     public ArrayList<Column> getDescendingColumns(){
         TreeSet<Column> invTree = (TreeSet<Column>)this.tree.descendingSet();

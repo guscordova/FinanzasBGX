@@ -21,46 +21,75 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 import utilidades.Column;
+import utilidades.CompraDB;
+import utilidades.Record;
 
 @Named("compraController")
 @SessionScoped
 public class CompraController implements Serializable {
 
     private int currentYear;
-    private String currentMonth;
-    private String currentSupplier;
     private Compra current;
     private DataModel items = null;
+    private CompraDB compraDB = null;
     @EJB
     private session.CompraFacade ejbFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
     private double totalPurchasesYear = 0.0;
     private DataModel totalPurchasesMonth = null;
+    private DataModel totalPurchasesComponent = null;
+    private DataModel totalPurchasesSupplier = null;
 
     public CompraController() {
         this.currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        this.currentMonth = "*";
-        this.currentSupplier = "*";
     }
     
-     @PostConstruct
+    @PostConstruct
     public void init() {
      
+    }
+     
+    public void refresh(){
+        this.compraDB = this.getFacade().getCompraDB(this.currentYear);
     }
     
     public void setCurrentYear(int year){
         this.currentYear = year;
     }
     
+    /*
+        Calcula total comprado (anual)
+    */
     public double getTotalPurchasesYear(){
-        this.totalPurchasesYear = this.getFacade().getYearPurchases(this.currentYear);
+        this.totalPurchasesYear = this.compraDB.getTotalPurchaseYear();
         return this.totalPurchasesYear;
     }
     
+    /*
+        Calcula total comprado (mensual)
+    */
     public List<Column> getTotalPurchasesMonth(){
-        List<Column> l = this.getFacade().getMonthPurchases(this.currentYear, this.currentMonth);
+        List<Column> l = this.compraDB.getTotalPurchaseMonth();
         this.totalPurchasesMonth = new ListDataModel(l);
+        return l;
+    }
+    
+    /*
+        Calcula total comprado por componente
+    */
+    public List<Record> getTotalPurchaseComponent(){
+        List<Record> l = this.compraDB.getTotalPurchaseComponent();
+        this.totalPurchasesComponent = new ListDataModel(l);
+        return l;
+    }
+    
+    /*
+        Calcula total comprado por proveedor
+    */
+    public List<Column> getTotalPurchaseSupplier(){
+        List<Column> l = this.compraDB.getTotalPurchaseSupplier();
+        this.totalPurchasesSupplier = new ListDataModel(l);
         return l;
     }
 

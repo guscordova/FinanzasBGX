@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.Root;
 import utilidades.Column;
+import utilidades.CompraDB;
 import utilidades.DateUtils;
 import utilidades.NumericTableSet;
 
@@ -45,9 +46,17 @@ public class CompraFacade extends AbstractFacade<Compra> {
         return this.em.createQuery(cq).getResultList();
     }
     
+    public CompraDB getCompraDB(int year){
+        CompraDB cdb = new CompraDB(year);
+        for (Compra c : this.C()) {
+            cdb.add(c);
+        }
+        return cdb;
+    }
+    
+    
     /*
-        Suma el costo total de todas las compras que pertenezcan
-        al año especificado como parametro
+        Calcula total comprado por año
     */
     public double getYearPurchases(int year) {
         double acum = 0;
@@ -62,19 +71,17 @@ public class CompraFacade extends AbstractFacade<Compra> {
     }
     
     /*
-        Por mes
+        Calcula total comprado por mes
     */
-    public List<Column> getMonthPurchases(int year, String month) {
+    public List<Column> getMonthPurchases(int year) {
         NumericTableSet acum = DateUtils.getDatedTableSet();
         for (Compra c : this.C()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(c.getFecPago());
             if (cal.get(Calendar.YEAR) == year) {
                 String strMonth = DateUtils.getMonth(Calendar.MONTH);
-                if(month.equals(strMonth) || month.equals("*")){
-                    double total = c.getCostoTotal();
-                    acum.addValue(strMonth, total);
-                }
+                double total = c.getCostoTotal();
+                acum.addValue(strMonth, total);
             }
         }
         return acum.getSumRow().getDescendingColumns();

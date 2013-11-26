@@ -130,9 +130,9 @@ public class VentaFacade extends AbstractFacade<Venta> {
             if (cal.get(Calendar.YEAR) == year) {
                 Cliente cliente = v.getOrdenId().getClienteId();
                 String distribuidorID = cliente.getId().toString();
-                String distributorName = cliente.getNombre() + " " + cliente.getAppaterno();
+                String distributorName = cliente.getNombre() + " " + cliente.getAppaterno() + " " + cliente.getApmaterno();
                 //  Anexamos el id solamente para fines de que sea unica la entrada
-                String key = cliente.getId().toString() + " " + distribuidorID + " " + distributorName;
+                String key = distribuidorID + " " + distributorName;
                 double total = v.getCantidad() * v.getMonto();
                 salesAcum.addValue(key, total);
             }
@@ -222,7 +222,7 @@ public class VentaFacade extends AbstractFacade<Venta> {
             if (cal.get(Calendar.YEAR) == year) {
                 Cliente cliente = o.getClienteId();
                 String distribuidorID = cliente.getId().toString();
-                String distributorName = cliente.getId() + " " + cliente.getNombre() + " " + cliente.getAppaterno();
+                String distributorName = cliente.getNombre() + " " + cliente.getAppaterno() + " " + cliente.getApmaterno();
                 String key = distribuidorID + " " + distributorName;
                 double total = o.getTotalPago();
                 //  Ahora a esta orden, le vamos a descontar todos los pagos realizados
