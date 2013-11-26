@@ -13,7 +13,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.criteria.Root;
 import utilidades.Column;
 import utilidades.DateUtils;
@@ -58,15 +57,6 @@ public class VentaFacade extends AbstractFacade<Venta> {
         cq.select(orden);
         return this.em.createQuery(cq).getResultList();
     }
-    
-    /*
-        Recaba las ordenes junto con su respectivo status
-    */
-    public List<Orden> OS(){
-        Query q = em.createNamedQuery("Orden.findPendientesProducir");
-        return q.getResultList();
-    }
-
     
     /*
         Ventas
@@ -129,6 +119,7 @@ public class VentaFacade extends AbstractFacade<Venta> {
     
     /*
         Pendiente por cobrar
+        Monto total de las ordenes descontando los pagos ya realizados a estos
     */
     
     /*
@@ -141,10 +132,14 @@ public class VentaFacade extends AbstractFacade<Venta> {
             cal.setTime(o.getFecAlta());
             if (cal.get(Calendar.YEAR) == year) {
                 orderSum += o.getTotalPago();
+                //  Ahora vemos los pagos que han sido realizados a esta orden
+                //  y los descontamos al total
+                for(Venta v : o.getVentaCollection()){
+                    orderSum -= v.getCantidad() * v.getMonto();
+                }
             }
         }
-        //  El monto total de las ordenes menos el monto que ha sido pagado
-        return orderSum - this.getYearSales(year);
+        return orderSum;
     }
     
     /*

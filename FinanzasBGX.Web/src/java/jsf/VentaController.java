@@ -65,6 +65,7 @@ public class VentaController implements Serializable {
         for(Column c : this.getTotalSalesDistributorYear()){
             System.out.println(c.name + " " + c.value);
         }
+        /*
         System.out.println("getPendienteCobrarAnual: " + this.getPendienteCobrarAnual());
         System.out.println("getPendienteCobrarMes: ");
         for(Column c : this.getPendienteCobrarMes()){
@@ -74,6 +75,7 @@ public class VentaController implements Serializable {
         for(Column c : this.getPendienteCobrarDistribuidor()){
             System.out.println(c.name + " " + c.value);
         }
+        */
     }
     
     public int getCurrentYear(){

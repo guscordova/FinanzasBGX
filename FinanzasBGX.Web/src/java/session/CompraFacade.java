@@ -71,7 +71,7 @@ public class CompraFacade extends AbstractFacade<Compra> {
             cal.setTime(c.getFecPago());
             if (cal.get(Calendar.YEAR) == year) {
                 String strMonth = DateUtils.getMonth(Calendar.MONTH);
-                if(strMonth.equals(month) || month.equals("*")){
+                if(month.equals(strMonth) || month.equals("*")){
                     double total = c.getCostoTotal();
                     acum.addValue(strMonth, total);
                 }
