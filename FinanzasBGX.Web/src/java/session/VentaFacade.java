@@ -8,6 +8,7 @@ import entities.Cliente;
 import entities.Estatus;
 import entities.Orden;
 import entities.Venta;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -18,10 +19,17 @@ import utilidades.Column;
 import utilidades.DateUtils;
 import utilidades.NumericTableSet;
 import utilidades.NumericTreeRow;
+import utilidades.Record;
 
-/**
- *
- * @author robertogarza
+/*
+    Implementado:
+        Calcula total vendido por año
+        Calcula total vendido por mes
+        Calcula total vendido por distribuidor
+        Comparar distribuidores
+        Calcula pendiente por cobrar
+        Calcula pendiente por cobrar por distribuidor
+        Calcula pendiente por producir
  */
 @Stateless
 public class VentaFacade extends AbstractFacade<Venta> {
@@ -59,10 +67,21 @@ public class VentaFacade extends AbstractFacade<Venta> {
     }
     
     /*
-        Ventas
+        Recaba un cliente dado su id (distribuidor)
+    */
+    public Cliente CById(Integer clientID){
+        return this.em.find(Cliente.class, clientID);
+    }
+    
+    /*
+        Venta Controller functions
     */
     
-    public double getYearSales(int year) {
+    /*
+        Calcula total vendido por año
+        Obtiene unicamente las ventas del año especificado y obtiene su sumatoria
+    */
+    public double getTotalSalesYear(int year) {
         double salesSum = 0;
         for (Venta v : this.V()) {
             Calendar cal = Calendar.getInstance();
@@ -74,27 +93,36 @@ public class VentaFacade extends AbstractFacade<Venta> {
         return salesSum;
     }
     
-    public NumericTableSet getMonthSalesTable(int year, String month){
+    /*
+        Calcula total vendido por mes (auxiliar)
+    */
+    private NumericTableSet getMonthSalesTable(int year){
         NumericTableSet salesSum = DateUtils.getDatedTableSet();
         for (Venta v : this.V()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(v.getFecCobro());
             if (cal.get(Calendar.YEAR) == year) {
                 String strMonth = DateUtils.getMonth(Calendar.MONTH);
-                if(month.equals(strMonth) || month.equals("*")){
-                    double total = v.getMonto() * v.getCantidad();
-                    salesSum.addValue(strMonth, total);
-                }
+                double total = v.getMonto() * v.getCantidad();
+                salesSum.addValue(strMonth, total);
             }
         }
         return salesSum;
     }
-
-    public List<Column> getMonthSales(int year, String month) {
-        return this.getMonthSalesTable(year, month).getSumRow().getDescendingColumns();
+    
+    /*
+        Calcula total vendido por mes
+        Obtiene unicamente las ventas del año especificado y organiza las 
+        sumatoria por meses
+    */
+    public List<Column> getMonthSales(int year) {
+        return this.getMonthSalesTable(year).getSumRow().getDescendingColumns();
     }
     
-    public NumericTableSet getDistributorSalesTable(int year, String selectedDistributor) {
+    /*
+        Calcula total vendido a distribuidores (auxiliar)
+    */
+    private NumericTableSet getDistributorSalesTable(int year) {
         NumericTableSet salesAcum = new NumericTableSet();
         for (Venta v : this.V()) {
             Calendar cal = Calendar.getInstance();
@@ -102,28 +130,69 @@ public class VentaFacade extends AbstractFacade<Venta> {
             if (cal.get(Calendar.YEAR) == year) {
                 Cliente cliente = v.getOrdenId().getClienteId();
                 String distribuidorID = cliente.getId().toString();
-                if(selectedDistributor.equals(distribuidorID ) || selectedDistributor.equals("*")){
-                    String distributorName = cliente.getNombre() + " " + cliente.getAppaterno();
-                    String key = distribuidorID + " " + distributorName;
-                    double total = v.getCantidad() * v.getMonto();
-                    salesAcum.addValue(key, total);
-                }
+                String distributorName = cliente.getNombre() + " " + cliente.getAppaterno();
+                //  Anexamos el id solamente para fines de que sea unica la entrada
+                String key = cliente.getId().toString() + " " + distribuidorID + " " + distributorName;
+                double total = v.getCantidad() * v.getMonto();
+                salesAcum.addValue(key, total);
             }
         }
         return salesAcum;
     }
     
-    public List<Column> getDistributorSales(int year, String selectedDistributor) {
-        return this.getDistributorSalesTable(year, selectedDistributor).getSumRow().getDescendingColumns();
+    /*
+        Calcula total vendido a distribuidores
+        Obtiene unicamente las ventas del año especificado y las organiza
+        por distribuidores (clientes)
+    */
+    public List<Record> getDistributorSales(int year) {
+        NumericTreeRow table = this.getDistributorSalesTable(year).getSumRow();
+        List<Record> records = new ArrayList<>();
+        for(Column c : table.getDescendingColumns()){
+            //  Separamos el id del nombre del cliente
+            String[] ls = c.name.split(" ");
+            int lsn = ls[0].length();
+            Record rcd = new Record(Integer.parseInt(ls[0]), 
+                                    c.name.substring(lsn + 1),
+                                    c.value);
+            records.add(rcd);
+        }
+        return records;
     }
     
     /*
-        Pendiente por cobrar
-        Monto total de las ordenes descontando los pagos ya realizados a estos
+       Comparar distribuidores (auxiliar)
     */
+    public double getDistributorSalesById(int year, Integer distributorID){
+        Cliente c = this.CById(distributorID);
+        double sum = 0;
+        //  Para cada distribuidor (cliente) recorremos sus ordenes, y por cada
+        //  orden recorremos las ventas filtradas por año
+        for(Orden o : c.getOrdenCollection()){
+            for(Venta v : o.getVentaCollection()){
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(v.getFecCobro());
+                if (cal.get(Calendar.YEAR) == year) {
+                    double total = v.getCantidad() * v.getMonto();
+                    sum += total;
+                }
+            }
+        }
+        return sum;
+    }
     
     /*
-        Anual
+        Comparar distribuidores
+    */
+    public double compareDistributorSales(int year, Integer dist1, Integer dist2){
+        //  Calculamos las ventas totales de cada uno y obtenemos su diferencia
+        double c1sum = getDistributorSalesById(year, dist1);
+        double c2sum = getDistributorSalesById(year, dist2);
+        return c1sum - c2sum;
+    }
+
+    /*
+        Calcula pendiente por cobrar total
     */
     public double getPendienteCobrarAnual(int year) {
         double orderSum = 0;
@@ -143,34 +212,9 @@ public class VentaFacade extends AbstractFacade<Venta> {
     }
     
     /*
-        Por mes
+        Calcula pendiente por cobrar total por distribuidor (auxiliar)
     */
-    public List<Column> getPendienteCobrarMensual(int year, String month) {
-        NumericTableSet orderAcum = DateUtils.getDatedTableSet();
-        for (Orden o : this.O()) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(o.getFecAlta());
-            if (cal.get(Calendar.YEAR) == year) {
-                String strMonth = DateUtils.getMonth(Calendar.MONTH);
-                if(month.equals(strMonth) || month.equals("*")){
-                    double total = o.getTotalPago();
-                    orderAcum.addValue(strMonth, total);
-                }
-            }
-        }
-        //  Obtengo las ventas mensuales por mes
-        NumericTableSet salesAcum = this.getMonthSalesTable(year, month);
-        NumericTreeRow difference = orderAcum.getSumRow();
-        //  Ahora, al monto total por mes de las ordenes, le resto las ventas totales
-        //  de cada mes
-        difference = difference.substract(salesAcum.getSumRow());
-        return difference.getDescendingColumns();
-    }
-    
-    /*
-        Por distribuidor
-    */
-    public List<Column> getPendienteCobrarDistribuidor(int year, String selectedDistributor) {
+    public NumericTableSet getPendienteCobrarDistribuidorTable(int year) {
         NumericTableSet acumOrder = new NumericTableSet();
         for (Orden o : this.O()) {
             Calendar cal = Calendar.getInstance();
@@ -178,23 +222,40 @@ public class VentaFacade extends AbstractFacade<Venta> {
             if (cal.get(Calendar.YEAR) == year) {
                 Cliente cliente = o.getClienteId();
                 String distribuidorID = cliente.getId().toString();
-                if(selectedDistributor.equals(distribuidorID) || selectedDistributor.equals("*")){
-                    String distributorName = cliente.getNombre() + " " + cliente.getAppaterno();
-                    String key = distribuidorID + " " + distributorName;
-                    double total = o.getTotalPago();
-                    acumOrder.addValue(key, total);
+                String distributorName = cliente.getId() + " " + cliente.getNombre() + " " + cliente.getAppaterno();
+                String key = distribuidorID + " " + distributorName;
+                double total = o.getTotalPago();
+                //  Ahora a esta orden, le vamos a descontar todos los pagos realizados
+                for(Venta v : o.getVentaCollection()){
+                    total -= v.getCantidad() * v.getMonto();
                 }
+                acumOrder.addValue(key, total);
             }
         }
         //  Realiza la sumatoria de los totales de las ordenesde cada uno de los distribuidores
-        NumericTreeRow orderSum = acumOrder.getSumRow();
-        //  A estos totales, restar los totales de las ventas realizadas por distribuidor
-        orderSum = orderSum.substract(this.getDistributorSalesTable(year, selectedDistributor).getSumRow());
-        return orderSum.getDescendingColumns();
+        return acumOrder;
     }
     
     /*
-        Pendiente por producir
+        Calcula pendiente por cobrar total por distribuidor
+    */
+   public List<Record> getPendienteCobrarDistribuidor(int year) {
+        NumericTreeRow table = this.getPendienteCobrarDistribuidorTable(year).getSumRow();
+        List<Record> records = new ArrayList<>();
+        for(Column c : table.getDescendingColumns()){
+            //  Separamos el id del nombre del cliente
+            String[] ls = c.name.split(" ");
+            int lsn = ls[0].length();
+            Record rcd = new Record(Integer.parseInt(ls[0]), 
+                                    c.name.substring(lsn + 1),
+                                    c.value);
+            records.add(rcd);
+        }
+        return records;
+    }
+    
+    /*
+        Pendiente por producir total
     */
     public double getPendienteProducirYear(int year) {
         double orderSum = 0;
@@ -211,25 +272,4 @@ public class VentaFacade extends AbstractFacade<Venta> {
         }
         return orderSum;
     }
-    
-    public NumericTreeRow getPendienteProducirMonth(int year, String month){
-        NumericTableSet orderAcum = DateUtils.getDatedTableSet();
-        for (Orden o : this.O()) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(o.getFecAlta());
-            if (cal.get(Calendar.YEAR) == year) {
-                Estatus estatus = o.getEstatusId();
-                //  5 = producido
-                if(estatus.getId() < 5){
-                    String strMonth = DateUtils.getMonth(Calendar.MONTH);
-                    if (month.equals(strMonth) || month.equals("*")) {
-                        double total = o.getTotalPago();
-                        orderAcum.addValue(strMonth, total);
-                    }
-                }
-            }
-        }
-        return orderAcum.getSumRow();
-    }
-
 }
