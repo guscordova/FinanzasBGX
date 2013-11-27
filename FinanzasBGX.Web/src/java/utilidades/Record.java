@@ -4,11 +4,13 @@
  */
 package utilidades;
 
+import java.io.Serializable;
+
 /**
 
  @author user
  */
-public class Record {
+public class Record implements Serializable{
     public Integer id;
     public String name;
     public Double value;

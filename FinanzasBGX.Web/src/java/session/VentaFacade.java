@@ -8,6 +8,7 @@ import entities.Cliente;
 import entities.Estatus;
 import entities.Orden;
 import entities.Venta;
+import entities.VentaMes;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -96,15 +97,27 @@ public class VentaFacade extends AbstractFacade<Venta> {
     /*
         Calcula total vendido por mes (auxiliar)
     */
-    private NumericTableSet getMonthSalesTable(int year){
-        NumericTableSet salesSum = DateUtils.getDatedTableSet();
+    private List<VentaMes> getMonthSalesTable(int year){
+        List<VentaMes> salesSum = new ArrayList<VentaMes>();
+        salesSum.add(new VentaMes ("Enero"));
+        salesSum.add(new VentaMes ("Febrero"));
+        salesSum.add(new VentaMes ("Marzo"));
+        salesSum.add(new VentaMes ("Abril"));
+        salesSum.add(new VentaMes ("Mayo"));
+        salesSum.add(new VentaMes ("Junio"));
+        salesSum.add(new VentaMes ("Julio"));
+        salesSum.add(new VentaMes ("Agosto"));
+        salesSum.add(new VentaMes ("Septiembre"));
+        salesSum.add(new VentaMes ("Octubre"));
+        salesSum.add(new VentaMes ("Noviembre"));
+        salesSum.add(new VentaMes ("Diciembre"));
         for (Venta v : this.V()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(v.getFecCobro());
             if (cal.get(Calendar.YEAR) == year) {
-                String strMonth = DateUtils.getMonth(Calendar.MONTH);
+                VentaMes m = salesSum.get(cal.get(Calendar.MONTH));
                 double total = v.getMonto() * v.getCantidad();
-                salesSum.addValue(strMonth, total);
+                m.setTotal(total + m.getTotal());
             }
         }
         return salesSum;
@@ -115,8 +128,8 @@ public class VentaFacade extends AbstractFacade<Venta> {
         Obtiene unicamente las ventas del año especificado y organiza las 
         sumatoria por meses
     */
-    public List<Column> getMonthSales(int year) {
-        return this.getMonthSalesTable(year).getSumRow().getDescendingColumns();
+    public List<VentaMes> getMonthSales(int year) {
+        return this.getMonthSalesTable(year);
     }
     
     /*

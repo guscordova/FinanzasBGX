@@ -48,28 +48,7 @@ public class VentaController implements Serializable {
     
     @PostConstruct
     public void init() {
-        System.out.println("Venta Controller test");
-        System.out.println("Default current year: " + this.currentYear);
-        System.out.println("getTotalSalesYear: " + this.getTotalSalesYear());
-        System.out.println("getTotalSalesMonth: ");
-        for(Column c : this.getTotalSalesMonth()){
-            System.out.println(c.name + " " + c.value);
-        }
-        System.out.println("getTotalSalesDistributorYear: ");
-        for(Record c : this.getTotalSalesDistributorYear()){
-            System.out.println(c.id + " " + c.name + " " + c.value);
-        }
-        /*
-        System.out.println("getPendienteCobrarAnual: " + this.getPendienteCobrarAnual());
-        System.out.println("getPendienteCobrarMes: ");
-        for(Column c : this.getPendienteCobrarMes()){
-            System.out.println(c.name + " " + c.value);
-        }
-        System.out.println("getPendienteCobrarDistribuidor: ");
-        for(Column c : this.getPendienteCobrarDistribuidor()){
-            System.out.println(c.name + " " + c.value);
-        }
-        */
+        
     }
     
     public int getCurrentYear(){
@@ -92,10 +71,10 @@ public class VentaController implements Serializable {
         return this.totalSalesYear;
     }
 
-    public List<Column> getTotalSalesMonth(){
-        List<Column> l = this.getFacade().getMonthSales(this.currentYear);
-        this.totalSalesMonth = new ListDataModel(l);
-        return l;
+    public DataModel getTotalSalesMonth(){
+        if (totalSalesMonth == null)
+            this.totalSalesMonth = new ListDataModel(this.getFacade().getMonthSales(this.currentYear));
+        return totalSalesMonth;
     }
     
     /*
