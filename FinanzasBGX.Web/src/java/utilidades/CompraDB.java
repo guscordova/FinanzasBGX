@@ -31,7 +31,7 @@ public class CompraDB {
     }
     
     /*
-        Calcula total comprado
+        Calcula total comprado (anual)
     */
     public double getTotalPurchaseYear(){
         //  Primero hacemos reducimos a los totales de cada mes

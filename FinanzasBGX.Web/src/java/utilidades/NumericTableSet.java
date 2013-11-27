@@ -63,6 +63,10 @@ public class NumericTableSet extends TableSet<Double> {
         return newRow;
     }
     
+    public double getSumColumn(String column){
+        return this.getSum(this.getRows(column));
+    }
+    
     public double getMean(ArrayList<Double> rows){
         double sum = 0;
         for(Double row : rows){
