@@ -3,10 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html">
-<ui:composition template="/master_template.xhtml">
-    <ui:define name="menu">
-        <ui:include src="/menu.xhtml" />
-    </ui:define>
+<ui:composition template="master_template.xhtml">
    
     <ui:define name="content">
         <br/>
@@ -19,22 +16,22 @@
                 <br/>
                 <li>
                 <h:form>
-                    <h:commandLink action="/venta/CompraMes" value="#{bundle.CompraMesTitle}"/>
+                    <h:commandLink action="/venta/VentaMes" value="#{bundle.VentaMesTitle}"/>
                 </h:form>
                 </li>
                 <li>
                 <h:form>
-                    <h:commandLink action="/venta/Componente" value="#{bundle.CompraComponenteTitle}"/>
-                </h:form>
-                </li>
-                <li>
-                <h:form>
-                    <h:commandLink action="/venta/Proveedor" value="#{bundle.CompraProveedorTitle}"/>
+                    <h:commandLink action="/venta/Distribuidor" value="#{bundle.VentaDistribuidorTitle}"/>
                 </h:form>
                 </li>
                 <li>
                 <h:form>
                     <h:commandLink action="/venta/Graficas" value="#{bundle.GraficasTitle}"/>
+                </h:form>
+                </li>
+                <li>
+                <h:form>
+                    <h:commandLink action="/venta/Comparar" value="#{bundle.VentaCompararTitle}"/>
                 </h:form>
                 </li>
             </ul>
@@ -44,13 +41,10 @@
        
         <div class="col-9">
             <h1>
-                <ui:insert name="title">#{bundle.CompraTitle}</ui:insert>
+                <ui:insert name="title">#{bundle.VentaTitle}</ui:insert>
             </h1>
             <ui:insert name="body"></ui:insert>
         </div>
-    </ui:define>
-    <ui:define name="footer">
-        <ui:include src="/footer.xhtml" />
     </ui:define>
 </ui:composition>
 </html>

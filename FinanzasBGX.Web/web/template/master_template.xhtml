@@ -12,19 +12,23 @@
         <h:outputLink rel="shortcut icon" value="img/favicon.ico"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no"/>
-        <h:outputStylesheet name="css/jsfcrud.css"/>
+        <!--<h:outputStylesheet name="css/jsfcrud.css"/>-->
     </h:head>
     <h:body>
         <div class="panels ">
-    <div class="panel panel-left">
-    </div>
-   </div> 
+        <div class="panel panel-left">
+            </div>
+        </div> 
    
-        <ui:insert name="menu">Default Menu</ui:insert>
+        <ui:insert name="menu">
+            <ui:include src="menu.xhtml" />
+        </ui:insert>
         
         <ui:insert name="content"/>
         
-        <ui:insert name="footer">Default Footer</ui:insert>
+        <ui:insert name="footer">
+            <ui:include src="footer.xhtml" />
+        </ui:insert>
         
     </h:body>
 <script src="resources/js/jquery.js"></script>

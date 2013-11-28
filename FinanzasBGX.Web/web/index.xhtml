@@ -5,11 +5,69 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core">
     <h:head>
-        <title>Facelet Title</title>
+        <title>BGX: Finanzas</title>
     </h:head>
     <h:body>
-        <ui:composition template="/template.xhtml">
-           
+        <ui:composition template="template/master_template.xhtml">
+            <ui:define name="content">
+            <br/>
+                <br/>
+                <div class="col-12">
+                    <h1>
+                        <ui:insert name="title">Indicadores</ui:insert>
+                    </h1>
+                    <ui:insert name="body">
+                        <div class="divIndicadores">
+                            <div class="row">
+                                <div class="col-4">
+                                    <h:outputText class="text-info" value="Total vendido"/>
+                                </div>
+                                <div class="col-4 divDerechoIndicador">
+                                    <h:outputText class="text-info" value="Total comprado"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 text-right">
+                                    <h:outputText value="$ #{ventaController.totalSalesYear}"/>
+                                </div>
+                                <div class="col-4 text-right divDerechoIndicador">
+                                   <h:outputText value="$ #{ventaController.totalSalesYear}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divIndicadores">
+                            <div class="row">
+                                <div class="col-4">
+                                    <h:outputText class="text-info" value="Pendiente por cobrar"/>
+                                </div>
+                                <div class="col-4 divDerechoIndicador">
+                                    <h:outputText class="text-info" value="Pendiente por producir"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 text-right">
+                                    <h:outputText class="text-right" value="$ #{ventaController.totalSalesYear}"/>
+                                </div>
+                                <div class="col-4 text-right divDerechoIndicador">
+                                   <h:outputText class="text-right" value="$ #{ventaController.totalSalesYear}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divIndicadores">
+                            <div class="row">
+                                <div class="col-4">
+                                    <h:outputText class="text-info" value="Inventario"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 text-right">
+                                    <h:outputText class="text-right" value="$ #{ventaController.totalSalesYear}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </ui:insert>
+                </div>
+            </ui:define>
         </ui:composition>
     </h:body>
 </html>
