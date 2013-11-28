@@ -4,11 +4,13 @@
  */
 package utilidades;
 
+import java.io.Serializable;
+
 /**
  *
  * @author user
  */
-public class Column implements Comparable<Column> {
+public class Column implements Comparable<Column>,  Serializable {
 
     public String name;
     public Double value;
