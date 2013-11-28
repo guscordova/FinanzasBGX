@@ -72,24 +72,21 @@ public class VentaController implements Serializable {
     }
 
     public DataModel getTotalSalesMonth(){
-        if (totalSalesMonth == null)
-            this.totalSalesMonth = new ListDataModel(this.getFacade().getMonthSales(this.currentYear));
+        this.totalSalesMonth = new ListDataModel(this.getFacade().getMonthSales(this.currentYear));
         return totalSalesMonth;
     }
     
     /*
         Por distribuidor
     */
-    public List<Record> getTotalSalesDistributorYear(){
-        List<Record> l = this.getFacade().getDistributorSales(this.currentYear);
-        this.totalSalesDistributorYear = new ListDataModel(l);
-        return l;
+    public DataModel getTotalSalesDistributorYear(){
+        this.totalSalesDistributorYear = new ListDataModel(this.getFacade().getDistributorSalesTable(this.currentYear));
+        return totalSalesDistributorYear;
     }
     
     /*
         Pendiente por cobrar
     */
-    
     public double getPendienteCobrarAnual(){
         this.pendienteCobrarAnual = this.getFacade().getPendienteCobrarAnual(currentYear);
         return this.pendienteCobrarAnual;

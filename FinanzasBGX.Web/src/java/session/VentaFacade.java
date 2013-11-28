@@ -8,6 +8,7 @@ import entities.Cliente;
 import entities.Estatus;
 import entities.Orden;
 import entities.Venta;
+import entities.VentaDistribuidor;
 import entities.VentaMes;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -94,10 +95,13 @@ public class VentaFacade extends AbstractFacade<Venta> {
         return salesSum;
     }
     
+    
     /*
-        Calcula total vendido por mes (auxiliar)
+        Calcula total vendido por mes
+        Obtiene unicamente las ventas del año especificado y organiza las 
+        sumatoria por meses
     */
-    private List<VentaMes> getMonthSalesTable(int year){
+    public List<VentaMes> getMonthSales(int year) {
         List<VentaMes> salesSum = new ArrayList<VentaMes>();
         salesSum.add(new VentaMes ("Enero"));
         salesSum.add(new VentaMes ("Febrero"));
@@ -124,55 +128,38 @@ public class VentaFacade extends AbstractFacade<Venta> {
     }
     
     /*
-        Calcula total vendido por mes
-        Obtiene unicamente las ventas del año especificado y organiza las 
-        sumatoria por meses
-    */
-    public List<VentaMes> getMonthSales(int year) {
-        return this.getMonthSalesTable(year);
-    }
-    
-    /*
         Calcula total vendido a distribuidores (auxiliar)
     */
-    private NumericTableSet getDistributorSalesTable(int year) {
-        NumericTableSet salesAcum = new NumericTableSet();
+    public List<VentaDistribuidor> getDistributorSalesTable(int year) {
+        List<VentaDistribuidor> salesAcum = new ArrayList<VentaDistribuidor>();
         for (Venta v : this.V()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(v.getFecCobro());
             if (cal.get(Calendar.YEAR) == year) {
                 Cliente cliente = v.getOrdenId().getClienteId();
-                String distribuidorID = cliente.getId().toString();
-                String distributorName = cliente.getNombre() + " " + cliente.getAppaterno() + " " + cliente.getApmaterno();
-                //  Anexamos el id solamente para fines de que sea unica la entrada
-                String key = distribuidorID + " " + distributorName;
-                double total = v.getCantidad() * v.getMonto();
-                salesAcum.addValue(key, total);
+                VentaDistribuidor distribuidor = null;
+                for (VentaDistribuidor d : salesAcum) {
+                    if (d.getId() == cliente.getId())
+                    {
+                        distribuidor = d;
+                        break;
+                    }
+                }
+                if (distribuidor == null)
+                {
+                    distribuidor = new VentaDistribuidor();
+                    distribuidor.setId(cliente.getId());
+                    distribuidor.setDistribuidor(cliente.getNombre() + " " + cliente.getAppaterno() + " " + cliente.getApmaterno());
+                    distribuidor.setTotal(v.getCantidad() * v.getMonto());
+                    salesAcum.add(distribuidor);
+                }
+                else 
+                    distribuidor.setTotal((v.getCantidad() * v.getMonto()) + distribuidor.getTotal());
             }
         }
         return salesAcum;
     }
-    
-    /*
-        Calcula total vendido a distribuidores
-        Obtiene unicamente las ventas del año especificado y las organiza
-        por distribuidores (clientes)
-    */
-    public List<Record> getDistributorSales(int year) {
-        NumericTreeRow table = this.getDistributorSalesTable(year).getSumRow();
-        List<Record> records = new ArrayList<>();
-        for(Column c : table.getDescendingColumns()){
-            //  Separamos el id del nombre del cliente
-            String[] ls = c.name.split(" ");
-            int lsn = ls[0].length();
-            Record rcd = new Record(Integer.parseInt(ls[0]), 
-                                    c.name.substring(lsn + 1),
-                                    c.value);
-            records.add(rcd);
-        }
-        return records;
-    }
-    
+   
     /*
        Comparar distribuidores (auxiliar)
     */

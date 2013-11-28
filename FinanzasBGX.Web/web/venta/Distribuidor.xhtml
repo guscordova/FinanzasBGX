@@ -9,8 +9,47 @@
             <h:outputText value="#{bundle.VentaDistribuidorTitle}"></h:outputText>
         </ui:define>
         <ui:define name="body">
-            <h:form>
-                <h:outputText value="#{ventaController.totalSalesYear}"/>
+             <h:form>
+                <div class="row">
+                    <div class="col-1">
+                        <h:outputText value="Año" />
+                    </div>
+                    <div class="col-2">
+                        <h:selectOneMenu value="#{ventaController.currentYear}">
+                            <f:selectItem itemValue="2013" itemLabel="2013" />
+                            <f:selectItem itemValue="2012" itemLabel="2012" />
+                            <f:selectItem itemValue="2011" itemLabel="2011" />
+                            <f:selectItem itemValue="2010" itemLabel="2010" />
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col-2">
+                        <h:outputText value="Distribuidor" />
+                    </div>
+                    <div class="col-2">
+                        <h:selectOneMenu>               
+                            <f:selectItem itemValue="1" itemLabel="D1" />
+                            <f:selectItem itemValue="2" itemLabel="D2" />
+                            <f:selectItem itemValue="3" itemLabel="D3" />
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col-1" style="padding: 0px !important">
+                        <h:commandLink  value="Buscar" immediate="true" class="btn btn-info"/>
+                    </div>
+                </div>
+                <h:dataTable value="#{ventaController.totalSalesDistributorYear}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListVentaTitle_id}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.distribuidor}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListVentaTitle_cantidad}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.total}"/>
+                        </h:column>
+                    </h:dataTable>
             </h:form>
         </ui:define>
     </ui:composition>
