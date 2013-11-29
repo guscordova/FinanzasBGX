@@ -8,8 +8,8 @@ import entities.Cliente;
 import entities.Estatus;
 import entities.Orden;
 import entities.Venta;
-import entities.VentaDistribuidor;
-import entities.VentaMes;
+import dto.VentaDistribuidor;
+import dto.VentaMes;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -101,7 +101,7 @@ public class VentaFacade extends AbstractFacade<Venta> {
         Obtiene unicamente las ventas del año especificado y organiza las 
         sumatoria por meses
     */
-    public List<VentaMes> getMonthSales(int year) {
+    public List<VentaMes> getMonthSales(int year, int distributor) {
         List<VentaMes> salesSum = new ArrayList<VentaMes>();
         salesSum.add(new VentaMes ("Enero"));
         salesSum.add(new VentaMes ("Febrero"));
@@ -119,9 +119,13 @@ public class VentaFacade extends AbstractFacade<Venta> {
             Calendar cal = Calendar.getInstance();
             cal.setTime(v.getFecCobro());
             if (cal.get(Calendar.YEAR) == year) {
-                VentaMes m = salesSum.get(cal.get(Calendar.MONTH));
-                double total = v.getMonto() * v.getCantidad();
-                m.setTotal(total + m.getTotal());
+                Cliente cliente = v.getOrdenId().getClienteId();
+                if (distributor == -1 || cliente.getId() == distributor) 
+                {
+                    VentaMes m = salesSum.get(cal.get(Calendar.MONTH));
+                    double total = v.getMonto() * v.getCantidad();
+                    m.setTotal(total + m.getTotal());
+                }
             }
         }
         return salesSum;
@@ -130,31 +134,33 @@ public class VentaFacade extends AbstractFacade<Venta> {
     /*
         Calcula total vendido a distribuidores (auxiliar)
     */
-    public List<VentaDistribuidor> getDistributorSalesTable(int year) {
+    public List<VentaDistribuidor> getDistributorSalesTable(int year, int distributor) {
         List<VentaDistribuidor> salesAcum = new ArrayList<VentaDistribuidor>();
         for (Venta v : this.V()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(v.getFecCobro());
             if (cal.get(Calendar.YEAR) == year) {
                 Cliente cliente = v.getOrdenId().getClienteId();
-                VentaDistribuidor distribuidor = null;
-                for (VentaDistribuidor d : salesAcum) {
-                    if (d.getId() == cliente.getId())
-                    {
-                        distribuidor = d;
-                        break;
+                if (distributor == -1 || cliente.getId() == distributor) {
+                    VentaDistribuidor distribuidor = null;
+                    for (VentaDistribuidor d : salesAcum) {
+                        if (d.getId() == cliente.getId())
+                        {
+                            distribuidor = d;
+                            break;
+                        }
                     }
-                }
-                if (distribuidor == null)
-                {
-                    distribuidor = new VentaDistribuidor();
-                    distribuidor.setId(cliente.getId());
-                    distribuidor.setDistribuidor(cliente.getNombre() + " " + cliente.getAppaterno() + " " + cliente.getApmaterno());
-                    distribuidor.setTotal(v.getCantidad() * v.getMonto());
-                    salesAcum.add(distribuidor);
-                }
-                else 
-                    distribuidor.setTotal((v.getCantidad() * v.getMonto()) + distribuidor.getTotal());
+                    if (distribuidor == null)
+                    {
+                        distribuidor = new VentaDistribuidor();
+                        distribuidor.setId(cliente.getId());
+                        distribuidor.setDistribuidor(cliente.getNombre() + " " + cliente.getAppaterno() + " " + cliente.getApmaterno());
+                        distribuidor.setTotal(v.getCantidad() * v.getMonto());
+                        salesAcum.add(distribuidor);
+                    }
+                    else 
+                        distribuidor.setTotal((v.getCantidad() * v.getMonto()) + distribuidor.getTotal());
+                    }
             }
         }
         return salesAcum;

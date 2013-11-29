@@ -5,9 +5,12 @@
 package session;
 
 import entities.Cliente;
+import entities.Venta;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -25,6 +28,14 @@ public class ClienteFacade extends AbstractFacade<Cliente> {
 
     public ClienteFacade() {
         super(Cliente.class);
+    }
+    
+    public List<Cliente> getDistributors()
+    {
+        javax.persistence.criteria.CriteriaQuery cq = this.em.getCriteriaBuilder().createQuery();
+        Root<Cliente> cliente = cq.from(Cliente.class);
+        cq.select(cliente);
+        return this.em.createQuery(cq).getResultList();
     }
     
 }

@@ -6,7 +6,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <ui:composition template="/template/ventas.xhtml">
         <ui:define name="title">
-            <h:outputText value="#{bundle.VentaDistribuidorTitle}"></h:outputText>
+            <h:outputText value="#{bundle.VentaDistribuidorTitle}" class="text-info"></h:outputText>
         </ui:define>
         <ui:define name="body">
              <h:form>
@@ -20,36 +20,45 @@
                             <f:selectItem itemValue="2012" itemLabel="2012" />
                             <f:selectItem itemValue="2011" itemLabel="2011" />
                             <f:selectItem itemValue="2010" itemLabel="2010" />
+                            <f:ajax  />
                         </h:selectOneMenu>
                     </div>
                     <div class="col-2">
                         <h:outputText value="Distribuidor" />
                     </div>
-                    <div class="col-2">
-                        <h:selectOneMenu>               
-                            <f:selectItem itemValue="1" itemLabel="D1" />
-                            <f:selectItem itemValue="2" itemLabel="D2" />
-                            <f:selectItem itemValue="3" itemLabel="D3" />
+                    <div class="col-3">
+                        <h:selectOneMenu value="#{ventaController.currentDistributor}">               
+                            <f:selectItem itemLabel="" itemValue="-1" noSelectionOption="true" />
+                            <f:selectItems value="#{clienteController.distributors}" var="d"
+                                          itemLabel="#{d.nombre}" itemValue="#{d.id}" />
+                            <f:ajax  />
                         </h:selectOneMenu>
                     </div>
                     <div class="col-1" style="padding: 0px !important">
-                        <h:commandLink  value="Buscar" immediate="true" class="btn btn-info"/>
+                        <h:commandButton  value="Buscar" immediate="true" class="btn btn-info"
+                                          action="#{ventaController.searchDistributor}">
+                        <f:ajax render="dtSalesDistributor"/>
+                        </h:commandButton>
                     </div>
                 </div>
-                <h:dataTable value="#{ventaController.totalSalesDistributorYear}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                 <div style="overflow: auto; max-height: 400px;">
+                <h:dataTable id="dtSalesDistributor" class="table table-striped"
+                             value="#{ventaController.totalSalesDistributorYear}" 
+                             var="item" cellpadding="2" cellspacing="0">
                         <h:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListVentaTitle_id}"/>
+                                <h:outputText value="#{bundle.ListSalesDistributor_distribuidor}"/>
                             </f:facet>
                             <h:outputText value="#{item.distribuidor}"/>
                         </h:column>
                         <h:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundle.ListVentaTitle_cantidad}"/>
+                                <h:outputText value="#{bundle.ListSalesDistributor_total}"/>
                             </f:facet>
                             <h:outputText value="#{item.total}"/>
                         </h:column>
                     </h:dataTable>
+                     </div>
             </h:form>
         </ui:define>
     </ui:composition>

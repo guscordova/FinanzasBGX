@@ -4,13 +4,95 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <ui:composition template="template/ventas.xhtml">
+    <ui:composition template="/template/ventas.xhtml">
         <ui:define name="title">
-            <h:outputText value="#{bundle.VentaCompararTitle}"></h:outputText>
+            <h:outputText value="#{bundle.VentaCompararTitle}" class="text-info"></h:outputText>
         </ui:define>
         <ui:define name="body">
             <h:form>
-                <h:outputText value="#{ventaController.totalSalesYear}"/>
+                <div class="row">
+                    <div class="col-1">
+                        <h:outputText value="Año" />
+                    </div>
+                    <div class="col-2">
+                        <h:selectOneMenu value="#{ventaController.currentYear}">
+                            <f:selectItem itemValue="2013" itemLabel="2013" />
+                            <f:selectItem itemValue="2012" itemLabel="2012" />
+                            <f:selectItem itemValue="2011" itemLabel="2011" />
+                            <f:selectItem itemValue="2010" itemLabel="2010" />
+                            <f:ajax  />
+                        </h:selectOneMenu>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2">
+                        <h:outputText value="Distribuidor" />
+                    </div>
+                    <div class="col-3">
+                        <h:selectOneMenu value="#{ventaController.currentDistributor}">               
+                            <f:selectItem itemLabel="" itemValue="-1" noSelectionOption="true" />
+                            <f:selectItems value="#{clienteController.distributors}" var="d"
+                                          itemLabel="#{d.nombre}" itemValue="#{d.id}" />
+                            <f:ajax  />
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col-2">
+                        <h:outputText value="Distribuidor" />
+                    </div>
+                    <div class="col-3">
+                        <h:selectOneMenu value="#{ventaController.currentDistributor2}">               
+                            <f:selectItem itemLabel="" itemValue="-1" noSelectionOption="true" />
+                            <f:selectItems value="#{clienteController.distributors}" var="d"
+                                          itemLabel="#{d.nombre}" itemValue="#{d.id}" />
+                            <f:ajax  />
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col-1" style="padding: 0px !important">
+                        <h:commandButton  value="Comparar" immediate="true" class="btn btn-info"
+                                          action="#{ventaController.compareDistributor}">
+                        <f:ajax render="dtSalesDistributor"/>
+                        <f:ajax render="dtSalesDistributor2"/>
+                        </h:commandButton>
+                    </div>
+                </div>
+                <div class="row" style="overflow: auto; max-height: 370px;">
+                    <div class="col-5">
+                        <h:dataTable id="dtSalesDistributor" class="table table-striped"
+                                     value="#{ventaController.totalSalesDistributorCompare}" 
+                                     var="item" cellpadding="2" cellspacing="0">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.ListSalesMonth_mes}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.mes}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.ListSalesMonth_total}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.total}"/>
+                            </h:column>
+                        </h:dataTable>
+                    </div>
+                    <div class="col-5">
+                        <h:dataTable id="dtSalesDistributor2" class="table table-striped"
+                                 value="#{ventaController.totalSalesDistributorCompare2}" 
+                                 var="item" cellpadding="2" cellspacing="0">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSalesMonth_mes}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.mes}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSalesMonth_total}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.total}"/>
+                        </h:column>
+                    </h:dataTable>
+                    </div>
+                </div>
             </h:form>
         </ui:define>
     </ui:composition>

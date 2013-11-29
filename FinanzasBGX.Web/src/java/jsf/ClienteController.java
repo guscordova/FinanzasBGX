@@ -6,6 +6,7 @@ import jsf.util.PaginationHelper;
 import session.ClienteFacade;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -24,12 +25,18 @@ public class ClienteController implements Serializable {
 
     private Cliente current;
     private DataModel items = null;
+    private List<Cliente> distributors = null;
     @EJB
     private session.ClienteFacade ejbFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
     public ClienteController() {
+    }
+    
+    public List<Cliente> getDistributors() {
+        distributors = ejbFacade.getDistributors();
+        return distributors;
     }
 
     public Cliente getSelected() {

@@ -17,6 +17,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
@@ -27,36 +28,59 @@ import utilidades.Record;
 @SessionScoped
 public class VentaController implements Serializable {
 
-    private int currentYear;
+    private String currentYear;
+    private String currentDistributor;
+    private String currentDistributor2;
+    private double totalSalesYear = 0.0;
+    private DataModel totalSalesMonth = null;
+    private DataModel totalSalesDistributorYear = null;
+    private DataModel totalSalesDistributorCompare = null;
+    private DataModel totalSalesDistributorCompare2 = null;
+    
     private Venta current;
     private DataModel items = null;
     @EJB
     private session.VentaFacade ejbFacade;
-    //
     private PaginationHelper pagination;
     private int selectedItemIndex;
-    private double totalSalesYear = 0.0;
-    private DataModel totalSalesMonth = null;
-    private DataModel totalSalesDistributorYear = null;
+    
     private double pendienteCobrarAnual = 0.0;
     private DataModel pendienteCobrarDistribuidor = null;
     
     public VentaController() {
         //  Fijamos el año actual por defecto, si este no ha sido cambiado
-        this.currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        this.currentYear = Calendar.getInstance().get(Calendar.YEAR) + "";
+        this.currentDistributor = "-1";
     }
     
     @PostConstruct
     public void init() {
-        
+        this.totalSalesMonth = new ListDataModel(this.getFacade().getMonthSales(Integer.parseInt(currentYear), -1));
+        this.totalSalesDistributorYear = new ListDataModel(this.getFacade().getDistributorSalesTable(Integer.parseInt(currentYear), -1));
     }
     
-    public int getCurrentYear(){
+    public String getCurrentYear(){
         return currentYear;
     }
     
-    public void setCurrentYear(int year){
+    public void setCurrentYear(String year){
         this.currentYear = year;
+    }
+    
+    public String getCurrentDistributor() {
+        return currentDistributor;
+    }
+    
+    public void setCurrentDistributor(String currentDistributor) {
+        this.currentDistributor = currentDistributor;
+    }
+    
+    public String getCurrentDistributor2() {
+        return currentDistributor2;
+    }
+    
+    public void setCurrentDistributor2(String currentDistributor) {
+        this.currentDistributor2 = currentDistributor;
     }
     
     /*
@@ -67,33 +91,59 @@ public class VentaController implements Serializable {
         Generales
     */
     public double getTotalSalesYear(){
-        this.totalSalesYear  = this.getFacade().getTotalSalesYear(this.currentYear);
+        this.totalSalesYear  = this.getFacade().getTotalSalesYear(Integer.parseInt(currentYear));
         return this.totalSalesYear;
     }
 
     public DataModel getTotalSalesMonth(){
-        this.totalSalesMonth = new ListDataModel(this.getFacade().getMonthSales(this.currentYear));
         return totalSalesMonth;
     }
     
-    /*
-        Por distribuidor
-    */
     public DataModel getTotalSalesDistributorYear(){
-        this.totalSalesDistributorYear = new ListDataModel(this.getFacade().getDistributorSalesTable(this.currentYear));
         return totalSalesDistributorYear;
     }
+    
+    public DataModel getTotalSalesDistributorCompare(){
+        return totalSalesDistributorCompare;
+    }
+    
+    public DataModel getTotalSalesDistributorCompare2(){
+        return totalSalesDistributorCompare2;
+    }
+    
+    public String searchMonth()
+    {
+        this.totalSalesMonth = new ListDataModel(this.getFacade().getMonthSales(Integer.parseInt(currentYear), Integer.parseInt(currentDistributor)));
+        return "";
+    }
+    
+    public String searchDistributor()
+    {
+        this.totalSalesDistributorYear = new ListDataModel(this.getFacade().getDistributorSalesTable(Integer.parseInt(currentYear), Integer.parseInt(currentDistributor)));
+        return "";
+    }
+
+    public String compareDistributor()
+    {
+        this.totalSalesDistributorCompare = new ListDataModel(this.getFacade().getMonthSales(Integer.parseInt(currentYear), Integer.parseInt(currentDistributor)));
+        this.totalSalesDistributorCompare2 = new ListDataModel(this.getFacade().getMonthSales(Integer.parseInt(currentYear), Integer.parseInt(currentDistributor2)));
+        return "";
+    }
+    
+    
+    
+    
     
     /*
         Pendiente por cobrar
     */
     public double getPendienteCobrarAnual(){
-        this.pendienteCobrarAnual = this.getFacade().getPendienteCobrarAnual(currentYear);
+        this.pendienteCobrarAnual = this.getFacade().getPendienteCobrarAnual(Integer.parseInt(currentYear));
         return this.pendienteCobrarAnual;
     }
     
     public List<Record> getPendienteCobrarDistribuidor(){
-        List<Record> l = this.getFacade().getPendienteCobrarDistribuidor(this.currentYear);
+        List<Record> l = this.getFacade().getPendienteCobrarDistribuidor(Integer.parseInt(currentYear));
         this.pendienteCobrarDistribuidor = new ListDataModel(l);
         return l;
     }
