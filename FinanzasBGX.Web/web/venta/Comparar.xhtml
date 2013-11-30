@@ -70,7 +70,9 @@
                                 <f:facet name="header">
                                     <h:outputText value="#{bundle.ListSalesMonth_total}"/>
                                 </f:facet>
-                                <h:outputText value="#{item.total}"/>
+                                <h:outputText value="#{item.total}">
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
                             </h:column>
                         </h:dataTable>
                     </div>
@@ -88,7 +90,9 @@
                             <f:facet name="header">
                                 <h:outputText value="#{bundle.ListSalesMonth_total}"/>
                             </f:facet>
-                            <h:outputText value="#{item.total}"/>
+                            <h:outputText value="#{item.total}">
+                                <f:convertNumber type="currency" currencySymbol="$" />
+                            </h:outputText>
                         </h:column>
                     </h:dataTable>
                     </div>
