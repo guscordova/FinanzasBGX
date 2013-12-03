@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="/template/compras.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.GraficasTitle}" class="text-info"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form>
+                <div class="row">
+                    <div class="col-1">
+                        <h:outputText value="Año" />
+                    </div>
+                    <div class="col-2">
+                        <h:selectOneMenu value="#{ventaController.currentYear}">
+                            <f:selectItem itemValue="2013" itemLabel="2013" />
+                            <f:selectItem itemValue="2012" itemLabel="2012" />
+                            <f:selectItem itemValue="2011" itemLabel="2011" />
+                            <f:selectItem itemValue="2010" itemLabel="2010" />
+                            <f:ajax  />
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col-2">
+                        <h:outputText value="Distribuidor" />
+                    </div>
+                    <div class="col-3">
+                        <h:selectOneMenu value="#{ventaController.currentDistributor}">               
+                            <f:selectItem itemLabel="" itemValue="-1" noSelectionOption="true" />
+                            <f:selectItems value="#{clienteController.distributors}" var="d"
+                                          itemLabel="#{d.nombre}" itemValue="#{d.id}" />
+                            <f:ajax  />
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col-1" style="padding: 0px !important">
+                        <h:commandButton  value="Buscar" immediate="true" class="btn btn-info"
+                                          action="#{ventaController.searchMonth}">
+                            <f:ajax render="dtSalesMonth"/>
+                        </h:commandButton>
+                    </div>
+                </div>
+                 <div style="overflow: auto; max-height: 400px;">
+                <h:dataTable id="dtSalesMonth" class="table table-striped"
+                             value="#{ventaController.totalSalesMonth}" 
+                             var="item" cellpadding="2" cellspacing="0">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSalesMonth_mes}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.mes}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSalesMonth_total}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.total}"/>
+                        </h:column>
+                    </h:dataTable>
+                 </div>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

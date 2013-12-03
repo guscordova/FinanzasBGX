@@ -32,18 +32,20 @@ public class VentaController implements Serializable {
     private String currentDistributor;
     private String currentDistributor2;
     private double totalSalesYear = 0.0;
+    private double totalSalesActualMonth = 0.0;
     private DataModel totalSalesMonth = null;
     private DataModel totalSalesDistributorYear = null;
     private DataModel totalSalesDistributorCompare = null;
     private DataModel totalSalesDistributorCompare2 = null;
+    @EJB
+    private session.VentaFacade ejbFacade;
+    
+    
     
     private Venta current;
     private DataModel items = null;
-    @EJB
-    private session.VentaFacade ejbFacade;
     private PaginationHelper pagination;
     private int selectedItemIndex;
-    
     private double pendienteCobrarAnual = 0.0;
     private DataModel pendienteCobrarDistribuidor = null;
     
@@ -51,6 +53,7 @@ public class VentaController implements Serializable {
         //  Fijamos el año actual por defecto, si este no ha sido cambiado
         this.currentYear = Calendar.getInstance().get(Calendar.YEAR) + "";
         this.currentDistributor = "-1";
+        this.currentDistributor2 = "-1";
     }
     
     @PostConstruct
@@ -91,8 +94,13 @@ public class VentaController implements Serializable {
         Generales
     */
     public double getTotalSalesYear(){
-        this.totalSalesYear  = this.getFacade().getTotalSalesYear(Integer.parseInt(currentYear));
+        this.totalSalesYear  = this.getFacade().getTotalSalesYear(Calendar.getInstance().get(Calendar.YEAR));
         return this.totalSalesYear;
+    }
+    
+    public double getTotalSalesActualMonth(){
+        this.totalSalesActualMonth  = this.getFacade().getTotalSalesActualMonth(Calendar.getInstance().get(Calendar.MONTH));
+        return this.totalSalesActualMonth;
     }
 
     public DataModel getTotalSalesMonth(){

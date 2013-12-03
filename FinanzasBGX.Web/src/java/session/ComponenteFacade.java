@@ -5,9 +5,15 @@
 package session;
 
 import entities.Componente;
+import entities.Proveedor;
+import entities.ProveedorComponente;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -27,4 +33,22 @@ public class ComponenteFacade extends AbstractFacade<Componente> {
         super(Componente.class);
     }
     
+    
+    public List<Componente> getComponents(int idSupplier)
+    {
+        List<Componente> components = new ArrayList<Componente>();
+        if (idSupplier == -1)
+            components = findAll();
+        else {
+            for (Componente c : findAll()) {
+                Iterator<ProveedorComponente> it = c.getProveedorComponenteCollection().iterator();
+                while(it.hasNext()){
+                    ProveedorComponente pc = it.next();
+                    if (pc.getProveedor().getId() == idSupplier) 
+                        components.add(c);
+                }
+            }
+        }
+        return components;
+    }
 }

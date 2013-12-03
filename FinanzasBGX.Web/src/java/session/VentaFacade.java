@@ -95,6 +95,19 @@ public class VentaFacade extends AbstractFacade<Venta> {
         return salesSum;
     }
     
+    public double getTotalSalesActualMonth(int month) {
+        double salesSum = 0;
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        for (Venta v : this.V()) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(v.getFecCobro());
+            if (cal.get(Calendar.YEAR) == year && cal.get(Calendar.MONTH) == month) {
+                salesSum += v.getMonto() * v.getCantidad();
+            }
+        }
+        return salesSum;
+    }
+    
     
     /*
         Calcula total vendido por mes

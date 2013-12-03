@@ -6,6 +6,7 @@ import jsf.util.PaginationHelper;
 import session.ComponenteFacade;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -22,6 +23,8 @@ import javax.faces.model.SelectItem;
 @SessionScoped
 public class ComponenteController implements Serializable {
 
+    private List<Componente> components;
+    
     private Componente current;
     private DataModel items = null;
     @EJB
@@ -31,6 +34,19 @@ public class ComponenteController implements Serializable {
 
     public ComponenteController() {
     }
+    
+    public List<Componente> getComponents(int idSupplier) {
+        return getFacade().getComponents(idSupplier);
+    }
+    
+    
+
+    
+    
+    
+    
+    
+    
 
     public Componente getSelected() {
         if (current == null) {

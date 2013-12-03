@@ -23,11 +23,12 @@ import javax.faces.model.SelectItem;
 @SessionScoped
 public class ClienteController implements Serializable {
 
-    private Cliente current;
-    private DataModel items = null;
     private List<Cliente> distributors = null;
     @EJB
     private session.ClienteFacade ejbFacade;
+    
+    private Cliente current;
+    private DataModel items = null;
     private PaginationHelper pagination;
     private int selectedItemIndex;
 
@@ -35,7 +36,7 @@ public class ClienteController implements Serializable {
     }
     
     public List<Cliente> getDistributors() {
-        distributors = ejbFacade.getDistributors();
+        distributors = getFacade().getDistributors();
         return distributors;
     }
 

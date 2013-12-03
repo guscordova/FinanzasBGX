@@ -1,12 +1,16 @@
 package jsf;
 
+import entities.Componente;
 import entities.Compra;
 import jsf.util.JsfUtil;
 import jsf.util.PaginationHelper;
 import session.CompraFacade;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.annotation.PostConstruct;
@@ -20,6 +24,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
+import session.ComponenteFacade;
 import utilidades.Column;
 import utilidades.CompraDB;
 import utilidades.Record;
@@ -28,52 +33,269 @@ import utilidades.Record;
 @SessionScoped
 public class CompraController implements Serializable {
 
-    private int currentYear;
-    private Compra current;
-    private DataModel items = null;
-    private CompraDB compraDB = null;
-    @EJB
-    private session.CompraFacade ejbFacade;
-    private PaginationHelper pagination;
-    private int selectedItemIndex;
+    private List<String> years;
+    
+    private String monthViewCurrentYear;
+    private String monthViewCurrentComponent;
+    private String monthViewCurrentSupplier;
+    private String monthViewSearch;
+    
+    private Date supplierViewStartDate;
+    private Date supplierViewEndDate;
+    private String supplierViewCurrentComponent;
+    private String supplierViewCurrentSupplier;
+    private String supplierViewSearch;
+    
+    private Date componentViewStartDate;
+    private Date componentViewEndDate;
+    private String componentViewCurrentComponent;
+    private String componentViewCurrentSupplier;
+    private String componentViewSearch;
+    
     private double totalPurchasesYear = 0.0;
+    private double totalPurchasesActualMonth = 0.0;
+    
     private DataModel totalPurchasesMonth = null;
     private DataModel totalPurchasesComponent = null;
     private DataModel totalPurchasesSupplier = null;
+    @EJB
+    private session.CompraFacade ejbFacade;
+    
+    
+    
+    
+    
+    
+    private Compra current;
+    private DataModel items = null;
+    private CompraDB compraDB = null;
+   
+    private PaginationHelper pagination;
+    private int selectedItemIndex;
+    
 
     public CompraController() {
-        this.currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        this.monthViewCurrentYear = Calendar.getInstance().get(Calendar.YEAR) + "";
+        Calendar cal1 = Calendar.getInstance();
+        cal1.set(Calendar.getInstance().get(Calendar.YEAR), Calendar.JANUARY, 01);
+        this.supplierViewStartDate = cal1.getTime();
+        this.componentViewStartDate = cal1.getTime();
+        Calendar cal2 = Calendar.getInstance();
+        cal2.set(Calendar.getInstance().get(Calendar.YEAR), Calendar.DECEMBER, 31);
+        this.supplierViewEndDate =  cal2.getTime();
+        this.componentViewEndDate = cal2.getTime();
+        this.monthViewCurrentComponent = "-1";
+        this.monthViewCurrentSupplier = "-1";
+        this.componentViewCurrentComponent = "-1";
+        this.componentViewCurrentSupplier = "-1";
+        this.supplierViewCurrentComponent = "-1";
+        this.supplierViewCurrentSupplier = "-1";
     }
     
     @PostConstruct
     public void init() {
-     
+        this.totalPurchasesMonth = new ListDataModel(this.getFacade().getMonthPurchases(
+                                                          Integer.parseInt(monthViewCurrentYear), 
+                                                          Integer.parseInt(monthViewCurrentSupplier), 
+                                                          Integer.parseInt(monthViewCurrentComponent)));
+        this.totalPurchasesSupplier = new ListDataModel(this.getFacade().getSupplierPurchases(
+                                                          supplierViewStartDate, supplierViewEndDate,
+                                                          Integer.parseInt(supplierViewCurrentSupplier), 
+                                                          Integer.parseInt(supplierViewCurrentComponent)));
+        this.totalPurchasesComponent = new ListDataModel(this.getFacade().getComponentPurchases(
+                                                          componentViewStartDate, componentViewEndDate,
+                                                          Integer.parseInt(componentViewCurrentSupplier), 
+                                                          Integer.parseInt(componentViewCurrentComponent)));
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        this.monthViewSearch = "Busqueda por año " + monthViewCurrentYear + ",   proveedor Todos, componente Todos";
+        this.supplierViewSearch = "Busqueda entre " +  df.format(supplierViewStartDate) + " y " + df.format(supplierViewEndDate) + ",   proveedor Todos, componente Todos";
+        this.componentViewSearch = "Busqueda entre " +  df.format(componentViewStartDate) + " y " + df.format(componentViewEndDate) + ",   proveedor Todos, componente Todos";
     }
-     
-    public void refresh(){
-        this.compraDB = this.getFacade().getCompraDB(this.currentYear);
+
+    public String getMonthViewCurrentYear() {
+        return monthViewCurrentYear;
+    }
+
+    public String getMonthViewCurrentComponent() {
+        return monthViewCurrentComponent;
+    }
+
+    public String getMonthViewCurrentSupplier() {
+        return monthViewCurrentSupplier;
     }
     
-    public void setCurrentYear(int year){
-        this.currentYear = year;
+    public String getMonthViewSearch() {
+        return monthViewSearch;
+    }
+    
+    public Date getComponentViewStartDate() {
+        return componentViewStartDate;
+    }
+    
+    public Date getComponentViewEndDate() {
+        return componentViewEndDate;
+    }
+    
+    public String getComponentViewCurrentComponent() {
+        return componentViewCurrentComponent;
+    }
+
+    public String getComponentViewCurrentSupplier() {
+        return componentViewCurrentSupplier;
+    }
+    
+    public String getSupplierViewSearch() {
+        return supplierViewSearch;
+    }
+
+    public Date getSupplierViewStartDate() {
+        return supplierViewStartDate;
+    }
+    
+    public Date getSupplierViewEndDate() {
+        return supplierViewEndDate;
+    }
+    
+    public String getSupplierViewCurrentComponent() {
+        return supplierViewCurrentComponent;
+    }
+
+    public String getSupplierViewCurrentSupplier() {
+        return supplierViewCurrentSupplier;
+    }
+    
+    public String getComponentViewSearch() {
+        return componentViewSearch;
+    }
+
+    public void setMonthViewCurrentYear(String monthViewCurrentYear) {
+        this.monthViewCurrentYear = monthViewCurrentYear;
+    }
+
+    public void setMonthViewCurrentComponent(String monthViewCurrentComponent) {
+        this.monthViewCurrentComponent = monthViewCurrentComponent;
+    }
+
+    public void setMonthViewCurrentSupplier(String monthViewCurrentSupplier) {
+        this.monthViewCurrentSupplier = monthViewCurrentSupplier;
+    }
+
+    public void setComponentViewStartDate(Date componentViewStartDate) {
+        this.componentViewStartDate = componentViewStartDate;
+    }
+    
+    public void setComponentViewEndDate(Date componentViewEndDate) {
+        this.componentViewEndDate = componentViewEndDate;
+    }
+
+    public void setComponentViewCurrentComponent(String componentViewCurrentComponent) {
+        this.componentViewCurrentComponent = componentViewCurrentComponent;
+    }
+
+    public void setComponentViewCurrentSupplier(String componentViewCurrentSupplier) {
+        this.componentViewCurrentSupplier = componentViewCurrentSupplier;
+    }
+
+    public void setSupplierViewStartDate(Date supplierViewStartDate) {
+        this.supplierViewStartDate = supplierViewStartDate;
+    }
+    
+    public void setSupplierViewEndDate(Date supplierViewEndDate) {
+        this.supplierViewEndDate = supplierViewEndDate;
+    }
+
+    public void setSupplierViewCurrentComponent(String supplierViewCurrentComponent) {
+        this.supplierViewCurrentComponent = supplierViewCurrentComponent;
+    }
+
+    public void setSupplierViewCurrentSupplier(String supplierViewCurrentSupplier) {
+        this.supplierViewCurrentSupplier = supplierViewCurrentSupplier;
+    }
+    
+    public DataModel getTotalPurchasesMonth(){
+        return totalPurchasesMonth;
+    }
+    
+    public DataModel getTotalPurchasesSupplier(){
+        return totalPurchasesSupplier;
+    }
+    
+    public DataModel getTotalPurchasesComponent(){
+        return totalPurchasesComponent;
+    }
+    
+    public List<String> getYears() {
+        this.years = this.getFacade().getYears();
+        return years;
     }
     
     /*
         Calcula total comprado (anual)
     */
     public double getTotalPurchasesYear(){
-        this.totalPurchasesYear = this.compraDB.getTotalPurchaseYear();
+        this.totalPurchasesYear = this.getFacade().getTotalPurchasesYear(Calendar.getInstance().get(Calendar.YEAR));
         return this.totalPurchasesYear;
     }
     
     /*
-        Calcula total comprado (mensual)
+        Calcula total comprado (mens actual)
     */
-    public List<Column> getTotalPurchasesMonth(){
-        List<Column> l = this.compraDB.getTotalPurchaseMonth();
-        this.totalPurchasesMonth = new ListDataModel(l);
-        return l;
+    public double getTotalPurchasesActualMonth(){
+        this.totalPurchasesActualMonth = this.getFacade().getTotalPurchasesActualMonth(Calendar.getInstance().get(Calendar.MONTH));
+        return this.totalPurchasesActualMonth;
     }
+    
+    public String searchMonth()
+    {
+        this.totalPurchasesMonth = new ListDataModel(this.getFacade().getMonthPurchases(
+                                                          Integer.parseInt(monthViewCurrentYear), 
+                                                          Integer.parseInt(monthViewCurrentSupplier), 
+                                                          Integer.parseInt(monthViewCurrentComponent)));
+        this.monthViewSearch = "Busqueda por año " + monthViewCurrentYear +
+                               ", proveedor " + this.getFacade().getSupplierNameById(Integer.parseInt(monthViewCurrentSupplier)) + 
+                               ", componente " + this.getFacade().getComponentNameById(Integer.parseInt(monthViewCurrentComponent));
+        return "";
+    }
+    
+    public String searchSupplier()
+    {
+        this.totalPurchasesSupplier = new ListDataModel(this.getFacade().getSupplierPurchases(
+                                                          supplierViewStartDate, supplierViewEndDate,
+                                                          Integer.parseInt(supplierViewCurrentSupplier), 
+                                                          Integer.parseInt(supplierViewCurrentComponent)));
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        this.supplierViewSearch = "Busqueda entre " +  df.format(supplierViewStartDate) + " y " + df.format(supplierViewEndDate) + 
+                                    ", proveedor " + this.getFacade().getSupplierNameById(Integer.parseInt(supplierViewCurrentSupplier)) + 
+                                    ", componente " + this.getFacade().getComponentNameById(Integer.parseInt(supplierViewCurrentComponent));
+        return "";
+    }
+    
+    public String searchComponent()
+    {
+        this.totalPurchasesComponent = new ListDataModel(this.getFacade().getComponentPurchases(
+                                                          componentViewStartDate, componentViewEndDate,
+                                                          Integer.parseInt(componentViewCurrentSupplier), 
+                                                          Integer.parseInt(componentViewCurrentComponent)));
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        this.componentViewSearch = "Busqueda entre " +  df.format(componentViewStartDate) + " y " + df.format(componentViewEndDate) + 
+                                    ", proveedor " + this.getFacade().getSupplierNameById(Integer.parseInt(componentViewCurrentSupplier)) + 
+                                    ", componente " + this.getFacade().getComponentNameById(Integer.parseInt(componentViewCurrentComponent));
+        return "";
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     /*
         Calcula total comprado por componente

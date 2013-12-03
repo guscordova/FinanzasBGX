@@ -6,6 +6,7 @@ import jsf.util.PaginationHelper;
 import session.ProveedorFacade;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -22,6 +23,11 @@ import javax.faces.model.SelectItem;
 @SessionScoped
 public class ProveedorController implements Serializable {
 
+    List<Proveedor> suppliers = null;
+    
+    
+    
+    
     private Proveedor current;
     private DataModel items = null;
     @EJB
@@ -31,6 +37,15 @@ public class ProveedorController implements Serializable {
 
     public ProveedorController() {
     }
+    
+    public List<Proveedor> getSuppliers() {
+        suppliers = getFacade().findAll();
+        return suppliers;
+    }
+    
+    
+    
+    
 
     public Proveedor getSelected() {
         if (current == null) {

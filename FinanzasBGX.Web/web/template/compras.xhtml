@@ -15,22 +15,22 @@
                 <br/>
                 <li>
                 <h:form>
-                    <h:commandLink action="/venta/CompraMes" value="#{bundle.CompraMesTitle}"/>
+                    <h:commandLink action="/compra/CompraMes" value="#{bundle.CompraMesTitle}"/>
                 </h:form>
                 </li>
                 <li>
                 <h:form>
-                    <h:commandLink action="/venta/Componente" value="#{bundle.CompraComponenteTitle}"/>
+                    <h:commandLink action="/compra/Proveedor" value="#{bundle.CompraProveedorTitle}"/>
                 </h:form>
                 </li>
                 <li>
                 <h:form>
-                    <h:commandLink action="/venta/Proveedor" value="#{bundle.CompraProveedorTitle}"/>
+                    <h:commandLink action="/compra/Componente" value="#{bundle.CompraComponenteTitle}"/>
                 </h:form>
                 </li>
                 <li>
                 <h:form>
-                    <h:commandLink action="/venta/Graficas" value="#{bundle.GraficasTitle}"/>
+                    <h:commandLink action="/compra/Graficas" value="#{bundle.GraficasTitle}"/>
                 </h:form>
                 </li>
             </ul>
@@ -39,7 +39,7 @@
         </div>
        
         <div class="col-9">
-            <h1>
+            <h1 style="margin-top: 10px">
                 <ui:insert name="title">#{bundle.CompraTitle}</ui:insert>
             </h1>
             <ui:insert name="body"></ui:insert>
