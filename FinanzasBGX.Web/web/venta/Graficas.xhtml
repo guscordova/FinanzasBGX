@@ -3,15 +3,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:gc="http://nz.co.kevindoran/googlecharts">
     <ui:composition template="/template/ventas.xhtml">
         <ui:define name="title">
-            <h:outputText value="#{bundle.GraficasTitle}"></h:outputText>
+            <h:outputText value="#{bundle.GraficasTitle}" class="text-info"></h:outputText>
         </ui:define>
         <ui:define name="body">
-            <h:form>
-                <h:outputText value="#{ventaController.totalSalesYear}"/>
-            </h:form>
+            <gc:googleChart model="#{ventaController.chartModelCurrentYear}" height="400px" width="800px" />
         </ui:define>
     </ui:composition>
 </html>
