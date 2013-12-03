@@ -1,5 +1,6 @@
 package jsf;
 
+import dto.VentaMes;
 import entities.Venta;
 import jsf.util.JsfUtil;
 import jsf.util.PaginationHelper;
@@ -17,11 +18,15 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.event.ValueChangeEvent;
+//import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
-import utilidades.Column;
+import nz.co.kevindoran.googlechartsjsf.DefaultGoogleChartModel;
+import nz.co.kevindoran.googlechartsjsf.GoogleChartModel;
+import nz.co.kevindoran.googlechartsjsf.Column;
+import nz.co.kevindoran.googlechartsjsf.Row;
+//import utilidades.Column;
 import utilidades.Record;
 
 @Named("ventaController")
@@ -36,7 +41,8 @@ public class VentaController implements Serializable {
     private DataModel totalSalesDistributorYear = null;
     private DataModel totalSalesDistributorCompare = null;
     private DataModel totalSalesDistributorCompare2 = null;
-    
+    private GoogleChartModel chartModelCurrentYear = new DefaultGoogleChartModel("LineChart");
+    private GoogleChartModel chartModelPastYears = new DefaultGoogleChartModel("corechart");
     private Venta current;
     private DataModel items = null;
     @EJB
@@ -51,12 +57,15 @@ public class VentaController implements Serializable {
         //  Fijamos el año actual por defecto, si este no ha sido cambiado
         this.currentYear = Calendar.getInstance().get(Calendar.YEAR) + "";
         this.currentDistributor = "-1";
+        
     }
     
     @PostConstruct
     public void init() {
         this.totalSalesMonth = new ListDataModel(this.getFacade().getMonthSales(Integer.parseInt(currentYear), -1));
         this.totalSalesDistributorYear = new ListDataModel(this.getFacade().getDistributorSalesTable(Integer.parseInt(currentYear), -1));
+        
+        loadGraphs();
     }
     
     public String getCurrentYear(){
@@ -129,11 +138,7 @@ public class VentaController implements Serializable {
         this.totalSalesDistributorCompare2 = new ListDataModel(this.getFacade().getMonthSales(Integer.parseInt(currentYear), Integer.parseInt(currentDistributor2)));
         return "";
     }
-    
-    
-    
-    
-    
+
     /*
         Pendiente por cobrar
     */
@@ -150,6 +155,34 @@ public class VentaController implements Serializable {
     
     //
     
+    /*
+     Gráficas
+     */
+    private void loadGraphs() {
+        List<VentaMes> totalSales = this.getFacade().getMonthSales(Integer.parseInt(currentYear), -1);
+        chartModelCurrentYear.addColumn(new Column(Column.JavaScriptType.string, "Mes"));
+        chartModelCurrentYear.addColumn(new Column(Column.JavaScriptType.number, "Ventas"));
+        int noOfRows = 2;
+        for(VentaMes n: totalSales) {
+            Row row = new Row(noOfRows);
+            row.addEntry("'" + n.getMes() + "'");
+            row.addEntry(String.valueOf(n.getTotal()));
+            chartModelCurrentYear.addRow(row);
+        }
+        
+        chartModelCurrentYear.setOptions("'title':'" + currentYear + "'," + "'displayAnnotations':false, 'fill':30"); // Simply inserted as javascript.  
+    }
+    
+    public GoogleChartModel getChartModelCurrentYear() {
+        
+        return chartModelCurrentYear;
+    }
+    
+    public GoogleChartModel getChartModelPastYears() {
+
+        return chartModelPastYears;
+    }
+
     public Venta getSelected() {
         if (current == null) {
             current = new Venta();
@@ -277,7 +310,7 @@ public class VentaController implements Serializable {
         return items;
     }
     
-private void recreateModel() {
+    private void recreateModel() {
         items = null;
     }
 
