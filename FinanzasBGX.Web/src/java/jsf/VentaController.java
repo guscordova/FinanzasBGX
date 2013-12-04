@@ -328,7 +328,7 @@ public class VentaController implements Serializable {
             chartModelCurrentYear.addRow(row);
         }
         
-        chartModelCurrentYear.setOptions("'title':'" + cal1.get(Calendar.YEAR) + "'," + "'displayAnnotations':false, 'fill':30"); // Simply inserted as javascript.  
+        chartModelCurrentYear.setOptions("'title':'" + year + "', 'displayAnnotations':false"); // Simply inserted as javascript.
     }
     
     private void loadGraphYears( ) {

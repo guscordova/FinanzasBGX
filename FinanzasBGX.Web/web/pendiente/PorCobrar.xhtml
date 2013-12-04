@@ -6,22 +6,12 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <ui:composition template="/template/pendiente.xhtml">
         <ui:define name="title">
-            <h:outputText value="#{bundle.VentaMesTitle}" class="text-info"></h:outputText>
+            <h:outputText value="#{bundle.PendienteCobrarTitle}" class="text-info"></h:outputText>
         </ui:define>
         <ui:define name="body">
             <h:form>
                 <div class="row" style="margin-top: -20px; margin-left: -5px">
-                    <div class="col-1">
-                        <h:outputText value="Año" />
-                    </div>
-                   <div class="col-2" style="margin-left:-30px;">
-                        <h:selectOneMenu value="#{ventaController.monthViewCurrentYear}">
-                            <f:selectItems value="#{ventaController.years}" var="d"
-                                          itemLabel="#{d}" itemValue="#{d}" />
-                            <f:ajax  />
-                        </h:selectOneMenu>
-                    </div>
-                    <div class="col-2" style="margin-left:15px;">
+                    <div class="col-2">
                         <h:outputText value="Distribuidor" />
                     </div>
                     <div class="col-4" style="margin-left:-50px;">
