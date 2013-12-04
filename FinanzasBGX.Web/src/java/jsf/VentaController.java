@@ -18,15 +18,13 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-//import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
-import nz.co.kevindoran.googlechartsjsf.DefaultGoogleChartModel;
-import nz.co.kevindoran.googlechartsjsf.GoogleChartModel;
-import nz.co.kevindoran.googlechartsjsf.Column;
-import nz.co.kevindoran.googlechartsjsf.Row;
-//import utilidades.Column;
+//import nz.co.kevindoran.googlechartsjsf.DefaultGoogleChartModel;
+//import nz.co.kevindoran.googlechartsjsf.GoogleChartModel;
+//import nz.co.kevindoran.googlechartsjsf.Column;
+//import nz.co.kevindoran.googlechartsjsf.Row;
 import utilidades.Record;
 
 @Named("ventaController")
@@ -42,8 +40,8 @@ public class VentaController implements Serializable {
     private DataModel totalSalesDistributorYear = null;
     private DataModel totalSalesDistributorCompare = null;
     private DataModel totalSalesDistributorCompare2 = null;
-    private GoogleChartModel chartModelCurrentYear = new DefaultGoogleChartModel("LineChart");
-    private GoogleChartModel chartModelPastYears = new DefaultGoogleChartModel("corechart");
+    //private GoogleChartModel chartModelCurrentYear = new DefaultGoogleChartModel("LineChart");
+    //private GoogleChartModel chartModelPastYears = new DefaultGoogleChartModel("corechart");
     @EJB
     private session.VentaFacade ejbFacade;
     
@@ -69,7 +67,7 @@ public class VentaController implements Serializable {
         this.totalSalesMonth = new ListDataModel(this.getFacade().getMonthSales(Integer.parseInt(currentYear), -1));
         this.totalSalesDistributorYear = new ListDataModel(this.getFacade().getDistributorSalesTable(Integer.parseInt(currentYear), -1));
         
-        loadGraphs();
+        //loadGraphs();
     }
     
     public String getCurrentYear(){
@@ -166,7 +164,7 @@ public class VentaController implements Serializable {
     
     /*
      Gráficas
-     */
+     */ /*
     private void loadGraphs() {
         List<VentaMes> totalSales = this.getFacade().getMonthSales(Integer.parseInt(currentYear), -1);
         chartModelCurrentYear.addColumn(new Column(Column.JavaScriptType.string, "Mes"));
@@ -190,7 +188,7 @@ public class VentaController implements Serializable {
     public GoogleChartModel getChartModelPastYears() {
 
         return chartModelPastYears;
-    }
+    }*/
 
     public Venta getSelected() {
         if (current == null) {
