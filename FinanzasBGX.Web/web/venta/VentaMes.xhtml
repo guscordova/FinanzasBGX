@@ -10,24 +10,22 @@
         </ui:define>
         <ui:define name="body">
             <h:form>
-                <div class="row">
+                <div class="row" style="margin-top: -20px; margin-left: -5px">
                     <div class="col-1">
                         <h:outputText value="Año" />
                     </div>
-                    <div class="col-2">
-                        <h:selectOneMenu value="#{ventaController.currentYear}">
-                            <f:selectItem itemValue="2013" itemLabel="2013" />
-                            <f:selectItem itemValue="2012" itemLabel="2012" />
-                            <f:selectItem itemValue="2011" itemLabel="2011" />
-                            <f:selectItem itemValue="2010" itemLabel="2010" />
+                   <div class="col-2" style="margin-left:-30px;">
+                        <h:selectOneMenu value="#{ventaController.monthViewCurrentYear}">
+                            <f:selectItems value="#{ventaController.years}" var="d"
+                                          itemLabel="#{d}" itemValue="#{d}" />
                             <f:ajax  />
                         </h:selectOneMenu>
                     </div>
-                    <div class="col-2">
+                    <div class="col-2" style="margin-left:15px;">
                         <h:outputText value="Distribuidor" />
                     </div>
-                    <div class="col-3">
-                        <h:selectOneMenu value="#{ventaController.currentDistributor}">               
+                    <div class="col-4" style="margin-left:-50px;">
+                        <h:selectOneMenu value="#{ventaController.monthViewCurrentDistributor}" style="width: 250px">               
                             <f:selectItem itemLabel="" itemValue="-1" noSelectionOption="true" />
                             <f:selectItems value="#{clienteController.distributors}" var="d"
                                           itemLabel="#{d.nombre}" itemValue="#{d.id}" />
@@ -38,9 +36,12 @@
                         <h:commandButton  value="Buscar" immediate="true" class="btn btn-info"
                                           action="#{ventaController.searchMonth}">
                             <f:ajax render="dtSalesMonth"/>
+                            <f:ajax render="searchText"/>
                         </h:commandButton>
                     </div>
                 </div>
+                <h:outputText id="searchText" style="font-size: 13.6px" class="text-success"
+                              value="#{ventaController.monthViewSearch}"/>
                  <div style="overflow: auto; max-height: 400px;">
                 <h:dataTable id="dtSalesMonth" class="table table-striped"
                              value="#{ventaController.totalSalesMonth}" 

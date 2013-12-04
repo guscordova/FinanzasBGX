@@ -7,7 +7,11 @@ import jsf.util.PaginationHelper;
 import session.VentaFacade;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.annotation.PostConstruct;
@@ -33,19 +37,38 @@ import utilidades.Record;
 @SessionScoped
 public class VentaController implements Serializable {
 
-    private String currentYear;
-    private String currentDistributor;
-    private String currentDistributor2;
+    private List<String> years;
+    
+    private String monthViewCurrentYear;
+    private String monthViewCurrentDistributor;
+    private String monthViewSearch;
+    
+    private Date distributorViewStartDate;
+    private Date distributorViewEndDate;
+    private String distributorViewCurrentDistributor;
+    private String distributorViewSearch;
+    
+    private Date compareViewStartDate;
+    private Date compareViewEndDate;
+    private String compareViewCurrentDistributor;
+    private String compareViewCurrentDistributor2;
+    private String compareViewSearch;
+    
     private double totalSalesYear = 0.0;
     private double totalSalesActualMonth = 0.0;
     private DataModel totalSalesMonth = null;
     private DataModel totalSalesDistributorYear = null;
     private DataModel totalSalesDistributorCompare = null;
     private DataModel totalSalesDistributorCompare2 = null;
+    private DataModel totalDifference = null;
+    
     private GoogleChartModel chartModelCurrentYear = new DefaultGoogleChartModel("LineChart");
     private GoogleChartModel chartModelPastYears = new DefaultGoogleChartModel("corechart");
+    
     @EJB
     private session.VentaFacade ejbFacade;
+    
+    
     
     
     
@@ -58,47 +81,134 @@ public class VentaController implements Serializable {
     private DataModel pendienteCobrarDistribuidor = null;
     
     public VentaController() {
-        //  Fijamos el año actual por defecto, si este no ha sido cambiado
-        this.currentYear = Calendar.getInstance().get(Calendar.YEAR) + "";
-        this.currentDistributor = "-1";
-        this.currentDistributor2 = "-1";
+        this.monthViewCurrentYear = Calendar.getInstance().get(Calendar.YEAR) + "";
+        this.monthViewCurrentDistributor = "-1";
+        
+        Calendar cal1 = Calendar.getInstance();
+        cal1.set(Calendar.getInstance().get(Calendar.YEAR), Calendar.JANUARY, 01);
+        this.distributorViewStartDate = cal1.getTime();
+        this.compareViewStartDate = cal1.getTime();
+        Calendar cal2 = Calendar.getInstance();
+        cal2.set(Calendar.getInstance().get(Calendar.YEAR), Calendar.DECEMBER, 31);
+        this.distributorViewEndDate =  cal2.getTime();
+        this.compareViewEndDate =  cal2.getTime();
+        this.distributorViewCurrentDistributor = "-1";
+        this.compareViewCurrentDistributor = "-1";
+        this.compareViewCurrentDistributor2 = "-1";
     }
     
     @PostConstruct
     public void init() {
-        this.totalSalesMonth = new ListDataModel(this.getFacade().getMonthSales(Integer.parseInt(currentYear), -1));
-        this.totalSalesDistributorYear = new ListDataModel(this.getFacade().getDistributorSalesTable(Integer.parseInt(currentYear), -1));
+        this.totalSalesMonth = new ListDataModel(this.getFacade().getMonthSales(Integer.parseInt(monthViewCurrentYear), -1));
+        this.totalSalesDistributorYear = new ListDataModel(this.getFacade().getDistributorSales(distributorViewStartDate, distributorViewEndDate, -1));
+        List<VentaMes> distributor1 = this.getFacade().getMonthSalesByDate(compareViewStartDate, compareViewEndDate, -1);
+        List<VentaMes> distributor2 = this.getFacade().getMonthSalesByDate(compareViewStartDate, compareViewEndDate, -1);
+        List<VentaMes> difference = new ArrayList<VentaMes>();
+        this.totalSalesDistributorCompare = new ListDataModel(distributor1);
+        this.totalSalesDistributorCompare2 = new ListDataModel(distributor2);
+        for (int i = 0; i < distributor1.size(); i++) {
+            VentaMes diff = new VentaMes();
+            diff.setTotal(distributor1.get(i).getTotal() - distributor2.get(i).getTotal());
+            difference.add(diff);
+        }
+        this.totalDifference = new ListDataModel(difference);
+        
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        this.monthViewSearch = "Busqueda por año " + monthViewCurrentYear + ", distribuidor Todos";
+        this.distributorViewSearch = "Busqueda entre " +  df.format(distributorViewStartDate) + " y " + df.format(distributorViewEndDate) + ", distribuidor Todos";
+        this.compareViewSearch = "Busqueda entre " +  df.format(compareViewStartDate) + " y " + df.format(compareViewEndDate) + ", comparando el distribuidor Todos con el distribuidor Todos";
         
         loadGraphs();
     }
     
-    public String getCurrentYear(){
-        return currentYear;
+    public String getMonthViewCurrentYear(){
+        return monthViewCurrentYear;
     }
     
-    public void setCurrentYear(String year){
-        this.currentYear = year;
+    public String getMonthViewCurrentDistributor(){
+        return monthViewCurrentDistributor;
     }
     
-    public String getCurrentDistributor() {
-        return currentDistributor;
+    public String getMonthViewSearch(){
+        return monthViewSearch;
+    }
+
+    public Date getDistributorViewStartDate() {
+        return distributorViewStartDate;
+    }
+
+    public Date getDistributorViewEndDate() {
+        return distributorViewEndDate;
+    }
+
+    public String getDistributorViewCurrentDistributor() {
+        return distributorViewCurrentDistributor;
+    }
+
+    public String getDistributorViewSearch() {
+        return distributorViewSearch;
+    }
+
+    public Date getCompareViewStartDate() {
+        return compareViewStartDate;
+    }
+
+    public Date getCompareViewEndDate() {
+        return compareViewEndDate;
+    }
+
+    public String getCompareViewCurrentDistributor() {
+        return compareViewCurrentDistributor;
+    }
+
+    public String getCompareViewCurrentDistributor2() {
+        return compareViewCurrentDistributor2;
+    }
+
+    public String getCompareViewSearch() {
+        return compareViewSearch;
     }
     
-    public void setCurrentDistributor(String currentDistributor) {
-        this.currentDistributor = currentDistributor;
+    public void setMonthViewCurrentYear(String monthViewCurrentYear){
+        this.monthViewCurrentYear = monthViewCurrentYear;
     }
     
-    public String getCurrentDistributor2() {
-        return currentDistributor2;
+    public void setMonthViewCurrentDistributor(String monthViewCurrentDistributor){
+        this.monthViewCurrentDistributor = monthViewCurrentDistributor;
+    }
+
+    public void setDistributorViewStartDate(Date distributorViewStartDate) {
+        this.distributorViewStartDate = distributorViewStartDate;
+    }
+
+    public void setDistributorViewEndDate(Date distributorViewEndDate) {
+        this.distributorViewEndDate = distributorViewEndDate;
+    }
+
+    public void setDistributorViewCurrentDistributor(String distributorViewCurrentDistributor) {
+        this.distributorViewCurrentDistributor = distributorViewCurrentDistributor;
+    }
+
+    public void setCompareViewStartDate(Date compareViewStartDate) {
+        this.compareViewStartDate = compareViewStartDate;
+    }
+
+    public void setCompareViewEndDate(Date compareViewEndDate) {
+        this.compareViewEndDate = compareViewEndDate;
+    }
+
+    public void setCompareViewCurrentDistributor(String compareViewCurrentDistributor) {
+        this.compareViewCurrentDistributor = compareViewCurrentDistributor;
+    }
+
+    public void setCompareViewCurrentDistributor2(String compareViewCurrentDistributor2) {
+        this.compareViewCurrentDistributor2 = compareViewCurrentDistributor2;
     }
     
-    public void setCurrentDistributor2(String currentDistributor) {
-        this.currentDistributor2 = currentDistributor;
+    public List<String> getYears() {
+        this.years = this.getFacade().getYears();
+        return years;
     }
-    
-    /*
-        Ventas
-    */
     
     /*
         Generales
@@ -129,22 +239,44 @@ public class VentaController implements Serializable {
         return totalSalesDistributorCompare2;
     }
     
+    public DataModel getTotalDifference() {
+        return totalDifference;
+    }
+    
     public String searchMonth()
     {
-        this.totalSalesMonth = new ListDataModel(this.getFacade().getMonthSales(Integer.parseInt(currentYear), Integer.parseInt(currentDistributor)));
+        this.totalSalesMonth = new ListDataModel(this.getFacade().getMonthSales(Integer.parseInt(monthViewCurrentYear), Integer.parseInt(monthViewCurrentDistributor)));
+        this.monthViewSearch = "Busqueda por año " + monthViewCurrentYear +
+                               ", distribuidor " + this.getFacade().getDistributorNameById(Integer.parseInt(monthViewCurrentDistributor));        
         return "";
     }
     
     public String searchDistributor()
     {
-        this.totalSalesDistributorYear = new ListDataModel(this.getFacade().getDistributorSalesTable(Integer.parseInt(currentYear), Integer.parseInt(currentDistributor)));
+        this.totalSalesDistributorYear = new ListDataModel(this.getFacade().getDistributorSales(distributorViewStartDate, distributorViewEndDate, Integer.parseInt(distributorViewCurrentDistributor)));
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        this.distributorViewSearch = "Busqueda entre " +  df.format(distributorViewStartDate) + " y " + df.format(distributorViewEndDate) +
+                                     ", distribuidor " + this.getFacade().getDistributorNameById(Integer.parseInt(distributorViewCurrentDistributor));        
         return "";
     }
 
     public String compareDistributor()
     {
-        this.totalSalesDistributorCompare = new ListDataModel(this.getFacade().getMonthSales(Integer.parseInt(currentYear), Integer.parseInt(currentDistributor)));
-        this.totalSalesDistributorCompare2 = new ListDataModel(this.getFacade().getMonthSales(Integer.parseInt(currentYear), Integer.parseInt(currentDistributor2)));
+        List<VentaMes> distributor1 = this.getFacade().getMonthSalesByDate(compareViewStartDate, compareViewEndDate, Integer.parseInt(compareViewCurrentDistributor));
+        List<VentaMes> distributor2 = this.getFacade().getMonthSalesByDate(compareViewStartDate, compareViewEndDate, Integer.parseInt(compareViewCurrentDistributor2));
+        List<VentaMes> difference = new ArrayList<VentaMes>();
+        for (int i = 0; i < distributor1.size(); i++) {
+            VentaMes diff = new VentaMes();
+            diff.setTotal(distributor1.get(i).getTotal() - distributor2.get(i).getTotal());
+            difference.add(diff);
+        }
+        this.totalSalesDistributorCompare = new ListDataModel(distributor1);
+        this.totalSalesDistributorCompare2 = new ListDataModel(distributor2);
+        this.totalDifference = new ListDataModel(difference);
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        this.compareViewSearch = "Busqueda entre " +  df.format(compareViewStartDate) + " y " + df.format(compareViewEndDate) + 
+                                 ", comparando el distribuidor " + this.getFacade().getDistributorNameById(Integer.parseInt(compareViewCurrentDistributor)) + 
+                                " con el distribuidor " + this.getFacade().getDistributorNameById(Integer.parseInt(compareViewCurrentDistributor2));
         return "";
     }
 
@@ -152,12 +284,14 @@ public class VentaController implements Serializable {
         Pendiente por cobrar
     */
     public double getPendienteCobrarAnual(){
-        this.pendienteCobrarAnual = this.getFacade().getPendienteCobrarAnual(Integer.parseInt(currentYear));
+        Calendar cal1 = Calendar.getInstance();
+        this.pendienteCobrarAnual = this.getFacade().getPendienteCobrarAnual(cal1.get(Calendar.YEAR));
         return this.pendienteCobrarAnual;
     }
     
     public List<Record> getPendienteCobrarDistribuidor(){
-        List<Record> l = this.getFacade().getPendienteCobrarDistribuidor(Integer.parseInt(currentYear));
+        Calendar cal1 = Calendar.getInstance();
+        List<Record> l = this.getFacade().getPendienteCobrarDistribuidor(cal1.get(Calendar.YEAR));
         this.pendienteCobrarDistribuidor = new ListDataModel(l);
         return l;
     }
@@ -168,7 +302,8 @@ public class VentaController implements Serializable {
      Gráficas
      */
     private void loadGraphs() {
-        List<VentaMes> totalSales = this.getFacade().getMonthSales(Integer.parseInt(currentYear), -1);
+         Calendar cal1 = Calendar.getInstance();
+        List<VentaMes> totalSales = this.getFacade().getMonthSales(cal1.get(Calendar.YEAR), -1);
         chartModelCurrentYear.addColumn(new Column(Column.JavaScriptType.string, "Mes"));
         chartModelCurrentYear.addColumn(new Column(Column.JavaScriptType.number, "Ventas"));
         int noOfRows = 2;
@@ -179,7 +314,7 @@ public class VentaController implements Serializable {
             chartModelCurrentYear.addRow(row);
         }
         
-        chartModelCurrentYear.setOptions("'title':'" + currentYear + "'," + "'displayAnnotations':false, 'fill':30"); // Simply inserted as javascript.  
+        chartModelCurrentYear.setOptions("'title':'" + cal1.get(Calendar.YEAR) + "'," + "'displayAnnotations':false, 'fill':30"); // Simply inserted as javascript.  
     }
     
     public GoogleChartModel getChartModelCurrentYear() {
@@ -200,7 +335,7 @@ public class VentaController implements Serializable {
         return current;
     }
 
-    private VentaFacade getFacade() {
+     private VentaFacade getFacade() {
         return ejbFacade;
     }
 

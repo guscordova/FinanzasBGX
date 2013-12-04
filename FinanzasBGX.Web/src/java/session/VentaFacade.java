@@ -12,6 +12,7 @@ import dto.VentaDistribuidor;
 import dto.VentaMes;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -49,16 +50,6 @@ public class VentaFacade extends AbstractFacade<Venta> {
     }
     
     /*
-        Recaba todas las ventas de un año dado
-    */
-    public List<Venta> V(){
-        javax.persistence.criteria.CriteriaQuery cq = this.em.getCriteriaBuilder().createQuery();
-        Root<Venta> venta = cq.from(Venta.class);
-        cq.select(venta);
-        return this.em.createQuery(cq).getResultList();
-    }
-    
-    /*
         Recaba todas las ordenes realizadas en un año dado
     */
     public List<Orden> O(){
@@ -78,14 +69,31 @@ public class VentaFacade extends AbstractFacade<Venta> {
     /*
         Venta Controller functions
     */
-    
+    public List<String> getYears() {
+        List<String> years = new ArrayList<String>();
+        int maxYear = Calendar.getInstance().get(Calendar.YEAR);
+        int minYear = Calendar.getInstance().get(Calendar.YEAR);
+        for (Venta c : findAll()) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(c.getFecCobro());
+            if (cal.get(Calendar.YEAR) > maxYear)  
+                maxYear = cal.get(Calendar.YEAR);
+            if (cal.get(Calendar.YEAR) < minYear)  
+                minYear = cal.get(Calendar.YEAR);
+        }
+        while (maxYear >= minYear) {
+            years.add(maxYear + "");
+            maxYear--;
+        }
+        return years;
+    }
     /*
         Calcula total vendido por año
         Obtiene unicamente las ventas del año especificado y obtiene su sumatoria
     */
     public double getTotalSalesYear(int year) {
         double salesSum = 0;
-        for (Venta v : this.V()) {
+        for (Venta v : findAll()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(v.getFecCobro());
             if (cal.get(Calendar.YEAR) == year) {
@@ -98,7 +106,7 @@ public class VentaFacade extends AbstractFacade<Venta> {
     public double getTotalSalesActualMonth(int month) {
         double salesSum = 0;
         int year = Calendar.getInstance().get(Calendar.YEAR);
-        for (Venta v : this.V()) {
+        for (Venta v : findAll()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(v.getFecCobro());
             if (cal.get(Calendar.YEAR) == year && cal.get(Calendar.MONTH) == month) {
@@ -128,7 +136,7 @@ public class VentaFacade extends AbstractFacade<Venta> {
         salesSum.add(new VentaMes ("Octubre"));
         salesSum.add(new VentaMes ("Noviembre"));
         salesSum.add(new VentaMes ("Diciembre"));
-        for (Venta v : this.V()) {
+        for (Venta v : findAll()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(v.getFecCobro());
             if (cal.get(Calendar.YEAR) == year) {
@@ -147,12 +155,12 @@ public class VentaFacade extends AbstractFacade<Venta> {
     /*
         Calcula total vendido a distribuidores (auxiliar)
     */
-    public List<VentaDistribuidor> getDistributorSalesTable(int year, int distributor) {
+    public List<VentaDistribuidor> getDistributorSales(Date startDate, Date endDate, int distributor) {
         List<VentaDistribuidor> salesAcum = new ArrayList<VentaDistribuidor>();
-        for (Venta v : this.V()) {
+        for (Venta v : findAll()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(v.getFecCobro());
-            if (cal.get(Calendar.YEAR) == year) {
+            if (cal.getTime().after(startDate) && cal.getTime().before(endDate)) {
                 Cliente cliente = v.getOrdenId().getClienteId();
                 if (distributor == -1 || cliente.getId() == distributor) {
                     VentaDistribuidor distribuidor = null;
@@ -178,6 +186,78 @@ public class VentaFacade extends AbstractFacade<Venta> {
         }
         return salesAcum;
     }
+    
+    public List<VentaMes> getMonthSalesByDate(Date startDate, Date endDate, int distributor) {
+        List<VentaMes> salesSum = new ArrayList<VentaMes>();
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(startDate);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(endDate);
+        int monthStart = cal1.get(Calendar.MONTH);
+        int yearStart = cal1.get(Calendar.YEAR);
+        int monthEnd = cal2.get(Calendar.MONTH);
+        int yearEnd = cal2.get(Calendar.YEAR);
+        while (monthStart <= monthEnd && yearStart <= yearEnd) {
+            VentaMes sale = new VentaMes();
+            sale.setMonth(monthStart);
+            sale.setYear(yearStart);
+            switch (monthStart) {
+                case 0: sale.setMes("Enero " + yearStart); break;
+                case 1: sale.setMes("Febrero " + yearStart); break;
+                case 2: sale.setMes("Marzo " + yearStart); break;
+                case 3: sale.setMes("Abril " + yearStart); break;
+                case 4: sale.setMes("Mayo " + yearStart); break;
+                case 5: sale.setMes("Junio " + yearStart); break;
+                case 6: sale.setMes("Julio " + yearStart); break;
+                case 7: sale.setMes("Agosto " + yearStart); break;
+                case 8: sale.setMes("Septiembre " + yearStart); break;
+                case 9: sale.setMes("Octubre " + yearStart); break; 
+                case 10: sale.setMes("Noviembre " + yearStart); break;
+                case 11: sale.setMes("Diciembre " + yearStart); break;    
+            }
+            salesSum.add(sale);
+            if (monthStart < 11)
+                monthStart++;
+            else {
+                monthStart = 0;
+                yearStart++;
+            }
+        }
+        for (Venta v : findAll()) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(v.getFecCobro());
+            if (cal.getTime().after(startDate) && cal.getTime().before(endDate)) {
+                Cliente cliente = v.getOrdenId().getClienteId();
+                if (distributor == -1 || cliente.getId() == distributor) 
+                {
+                    VentaMes sale = new VentaMes();
+                    for(VentaMes m: salesSum) {
+                        if (m.getMonth() == cal.get(Calendar.MONTH) && m.getYear() == cal.get(Calendar.YEAR))
+                            sale = m;
+                    }
+                    double total = v.getMonto() * v.getCantidad();
+                    sale.setTotal(total + sale.getTotal());
+                }
+            }
+        }
+        return salesSum;
+    }
+    
+    
+    public String getDistributorNameById(int idDistributor) {
+        if (idDistributor != -1) {
+            javax.persistence.criteria.CriteriaQuery cq = this.em.getCriteriaBuilder().createQuery();
+            Root<Cliente> distributor = cq.from(Cliente.class);
+            cq.select(distributor);
+            List<Cliente> distributors = this.em.createQuery(cq).getResultList();
+            for (Cliente p : distributors) {
+                if (p.getId() == idDistributor)
+                    return p.getNombre();
+            }
+        }
+        return "Todos";
+    }
+    
    
     /*
        Comparar distribuidores (auxiliar)

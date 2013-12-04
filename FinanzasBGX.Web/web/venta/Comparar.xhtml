@@ -3,60 +3,77 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
     <ui:composition template="/template/ventas.xhtml">
         <ui:define name="title">
             <h:outputText value="#{bundle.VentaCompararTitle}" class="text-info"></h:outputText>
         </ui:define>
         <ui:define name="body">
             <h:form>
-                <div class="row">
-                    <div class="col-1">
-                        <h:outputText value="Año" />
-                    </div>
+                <div class="row" style="margin-top: -15px; margin-left: -5px;">
                     <div class="col-2">
-                        <h:selectOneMenu value="#{ventaController.currentYear}">
-                            <f:selectItem itemValue="2013" itemLabel="2013" />
-                            <f:selectItem itemValue="2012" itemLabel="2012" />
-                            <f:selectItem itemValue="2011" itemLabel="2011" />
-                            <f:selectItem itemValue="2010" itemLabel="2010" />
-                            <f:ajax  />
-                        </h:selectOneMenu>
+                        <h:outputText value="Fecha inicial" />
+                    </div>
+                    <div class="col-2 calendar" style="margin-top:-8px;">
+                        <p:calendar id="startDate" value="#{ventaController.compareViewStartDate}"
+                                    pattern="dd/MM/yyyy" effect="slideDown" navigator="true"
+                                    maxdate="#{ventaController.compareViewEndDate}"
+                                    style="margin-left: -40px">
+                            <p:ajax event="dateSelect" update="endDate"/>
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>  
+                        </p:calendar> 
+                    </div>
+                    <div class="col-2" style="margin-left: -50px">
+                        <h:outputText value="Fecha fin" />
+                    </div>
+                    <div class="col-2 calendar" style="margin-top:-8px">
+                        <p:calendar id="endDate" value="#{ventaController.compareViewEndDate}"
+                                    pattern="dd/MM/yyyy" effect="slideDown" navigator="true"
+                                    mindate="#{ventaController.compareViewStartDate}"
+                                    style="margin-left: -65px">
+                            <p:ajax event="dateSelect" update="startDate"/>
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>  
+                        </p:calendar> 
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-2">
+                <div class="row" style="margin-left: -5px;">
+                    <div class="col-1" style="margin-top: -15px">
                         <h:outputText value="Distribuidor" />
                     </div>
-                    <div class="col-3">
-                        <h:selectOneMenu value="#{ventaController.currentDistributor}">               
+                    <div class="col-4" style="margin-left:20px; margin-top: -15px">
+                        <h:selectOneMenu value="#{ventaController.compareViewCurrentDistributor}" style="width: 220px">               
                             <f:selectItem itemLabel="" itemValue="-1" noSelectionOption="true" />
                             <f:selectItems value="#{clienteController.distributors}" var="d"
                                           itemLabel="#{d.nombre}" itemValue="#{d.id}" />
                             <f:ajax  />
                         </h:selectOneMenu>
                     </div>
-                    <div class="col-2">
+                    <div class="col-1" style="margin-top: -15px; margin-left: -25px">
                         <h:outputText value="Distribuidor" />
                     </div>
-                    <div class="col-3">
-                        <h:selectOneMenu value="#{ventaController.currentDistributor2}">               
+                    <div class="col-4" style="margin-left:20px; margin-top: -15px">
+                        <h:selectOneMenu value="#{ventaController.compareViewCurrentDistributor2}" style="width: 220px">               
                             <f:selectItem itemLabel="" itemValue="-1" noSelectionOption="true" />
                             <f:selectItems value="#{clienteController.distributors}" var="d"
                                           itemLabel="#{d.nombre}" itemValue="#{d.id}" />
                             <f:ajax  />
                         </h:selectOneMenu>
                     </div>
-                    <div class="col-1" style="padding: 0px !important">
+                    <div class="col-1" style="padding: 0px !important; margin-top: -15px; margin-left: -10px">
                         <h:commandButton  value="Comparar" immediate="true" class="btn btn-info"
                                           action="#{ventaController.compareDistributor}">
                         <f:ajax render="dtSalesDistributor"/>
                         <f:ajax render="dtSalesDistributor2"/>
+                        <f:ajax render="dtSalesDifference"/>
+                        <f:ajax render="searchText"/>
                         </h:commandButton>
                     </div>
                 </div>
-                <div class="row" style="overflow: auto; max-height: 370px;">
-                    <div class="col-5">
+                <h:outputText id="searchText" style="font-size: 13.6px" class="text-success" 
+                              value="#{ventaController.compareViewSearch}"/>
+                <div class="row" style="overflow: auto; max-height: 350px;">
+                    <div class="col-5" style="width: 330px">
                         <h:dataTable id="dtSalesDistributor" class="table table-striped"
                                      value="#{ventaController.totalSalesDistributorCompare}" 
                                      var="item" cellpadding="2" cellspacing="0">
@@ -76,7 +93,7 @@
                             </h:column>
                         </h:dataTable>
                     </div>
-                    <div class="col-5">
+                    <div class="col-5" style="width: 330px">
                         <h:dataTable id="dtSalesDistributor2" class="table table-striped"
                                  value="#{ventaController.totalSalesDistributorCompare2}" 
                                  var="item" cellpadding="2" cellspacing="0">
@@ -89,6 +106,20 @@
                         <h:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundle.ListSalesMonth_total}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.total}">
+                                <f:convertNumber type="currency" currencySymbol="$ " />
+                            </h:outputText>
+                        </h:column>
+                    </h:dataTable>
+                    </div>
+                    <div class="col-2" style="width: 170px">
+                        <h:dataTable id="dtSalesDifference" class="table table-striped"
+                                     value="#{ventaController.totalDifference}" 
+                                 var="item" cellpadding="2" cellspacing="0">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListSalesCompareDistributor_total}"/>
                             </f:facet>
                             <h:outputText value="#{item.total}">
                                 <f:convertNumber type="currency" currencySymbol="$ " />

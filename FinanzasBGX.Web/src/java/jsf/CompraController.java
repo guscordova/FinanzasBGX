@@ -1,6 +1,5 @@
 package jsf;
 
-import entities.Componente;
 import entities.Compra;
 import jsf.util.JsfUtil;
 import jsf.util.PaginationHelper;
@@ -107,9 +106,9 @@ public class CompraController implements Serializable {
                                                           Integer.parseInt(componentViewCurrentSupplier), 
                                                           Integer.parseInt(componentViewCurrentComponent)));
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        this.monthViewSearch = "Busqueda por año " + monthViewCurrentYear + ",   proveedor Todos, componente Todos";
-        this.supplierViewSearch = "Busqueda entre " +  df.format(supplierViewStartDate) + " y " + df.format(supplierViewEndDate) + ",   proveedor Todos, componente Todos";
-        this.componentViewSearch = "Busqueda entre " +  df.format(componentViewStartDate) + " y " + df.format(componentViewEndDate) + ",   proveedor Todos, componente Todos";
+        this.monthViewSearch = "Busqueda por año " + monthViewCurrentYear + ", proveedor Todos, componente Todos";
+        this.supplierViewSearch = "Busqueda entre " +  df.format(supplierViewStartDate) + " y " + df.format(supplierViewEndDate) + ", proveedor Todos, componente Todos";
+        this.componentViewSearch = "Busqueda entre " +  df.format(componentViewStartDate) + " y " + df.format(componentViewEndDate) + ", proveedor Todos, componente Todos";
     }
 
     public String getMonthViewCurrentYear() {
