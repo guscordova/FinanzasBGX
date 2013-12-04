@@ -3,13 +3,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:gc="http://nz.co.kevindoran/googlecharts">
-    <ui:composition template="/template/ventas.xhtml">
+        <ui:composition template="/template/compras.xhtml">
         <ui:define name="title">
-            <h:outputText value="#{bundle.GraficasTitle}" class="text-info"></h:outputText>
+            <h:outputText value="#{bundle.GraficaHistoricaTitle}" class="text-info"></h:outputText>
         </ui:define>
         <ui:define name="body">
-            <gc:googleChart model="#{ventaController.chartModelCurrentYear}" height="400px" width="800px" />
+            <div style="overflow: auto; max-height: 400px;">
+                <gc:googleChart id="graphAños" model="#{compraController.chartModelPastYears}" height="400px" width="800px" />
+            </div>
         </ui:define>
     </ui:composition>
 </html>
