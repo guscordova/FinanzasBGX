@@ -46,7 +46,7 @@ public class CompraFacade extends AbstractFacade<Compra> {
 
     public List<String> getYears() {
         List<String> years = new ArrayList<String>();
-        int maxYear = Calendar.getInstance().get(Calendar.YEAR) + 5;
+        int maxYear = Calendar.getInstance().get(Calendar.YEAR);
         int minYear = Calendar.getInstance().get(Calendar.YEAR);
         for (Compra c : findAll()) {
             Calendar cal = Calendar.getInstance();

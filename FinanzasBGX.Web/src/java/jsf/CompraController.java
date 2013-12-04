@@ -25,9 +25,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
-//import utilidades.Column;
 import utilidades.CompraDB;
-import utilidades.Record;
 
 import nz.co.kevindoran.googlechartsjsf.DefaultGoogleChartModel;
 import nz.co.kevindoran.googlechartsjsf.GoogleChartModel;

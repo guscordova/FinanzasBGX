@@ -13,3 +13,7 @@
 .divDerechoIndicador {
     margin-left: 6em;
 }
+
+.calendar input{
+    width: 105px;
+}
