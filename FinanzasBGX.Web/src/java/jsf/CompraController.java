@@ -122,7 +122,8 @@ public class CompraController implements Serializable {
         this.supplierViewSearch = "Busqueda entre " +  df.format(supplierViewStartDate) + " y " + df.format(supplierViewEndDate) + ",   proveedor Todos, componente Todos";
         this.componentViewSearch = "Busqueda entre " +  df.format(componentViewStartDate) + " y " + df.format(componentViewEndDate) + ",   proveedor Todos, componente Todos";
     
-        loadGraphs(graphViewCurrentYear);
+        loadGraphMonths(graphViewCurrentYear);
+        loadGraphYears();
     }
 
     public String getMonthViewCurrentYear() {
@@ -308,7 +309,7 @@ public class CompraController implements Serializable {
         this.graphViewCurrentYear = graphViewCurrentYear;
     }
     
-     private void loadGraphs(String year) {
+    private void loadGraphMonths(String year) {
          List<CompraMes> totalPurchases  = this.getFacade().getMonthPurchases(Integer.parseInt(year), 
                                                     -1, 
                                                     -1);
@@ -328,17 +329,44 @@ public class CompraController implements Serializable {
         }
         
         chartModelCurrentYear.setOptions("title:'" + graphViewCurrentYear + "', displayAnnotations:false"); // Simply inserted as javascript.  
+        
+        
+        //this.getFacade().getTotalPurchasesYear(Calendar.getInstance().get(Calendar.YEAR));
+    }
+    
+    private void loadGraphYears( ) {
+         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+        chartModelPastYears.addColumn(new Column(Column.JavaScriptType.string, "Año"));
+        chartModelPastYears.addColumn(new Column(Column.JavaScriptType.number, "Compras"));
+        
+        DecimalFormat df = new DecimalFormat("#,###,###,###.##");
+        int noOfRows = 2;
+        for(int i=-10; i < 1; i++) {
+            int y = currentYear + i;
+            Row row = new Row(noOfRows);
+            row.addEntry("'" + y + "'");
+            double amount = this.getFacade().getTotalPurchasesYear(y);
+            row.addEntry("{ v: " + amount + ", f: '$" + df.format(amount) + "'}");
+            chartModelPastYears.addRow(row);
+            
+        }
+        
+        chartModelPastYears.setOptions("title:'Compras Historicas', displayAnnotations:false"); // Simply inserted as javascript.  
 
     }
      
-     public void updateGraph() {
+     public void updateGraph( ) {
          chartModelCurrentYear = new DefaultGoogleChartModel("LineChart");
-         loadGraphs(graphViewCurrentYear);
+         loadGraphMonths(graphViewCurrentYear);
      }
      
      public GoogleChartModel getChartModelCurrentYear() {
-        
         return chartModelCurrentYear;
+     }
+     
+     public GoogleChartModel getChartModelPastYears() {
+        return chartModelPastYears;
      }
     
     

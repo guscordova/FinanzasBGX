@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:gc="http://nz.co.kevindoran/googlecharts">
+    <ui:composition template="/template/compras.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.GraficaActualTitle}" class="text-info"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form>
+                <div class="row" style="margin-top: -20px; margin-left: -5px">
+                    <div class="col-1">
+                        <h:outputText value="Año" />
+                    </div>
+                    <div class="col-1" style="margin-left:-30px;">
+                        <h:selectOneMenu value="#{compraController.graphViewCurrentYear}">
+                            <f:selectItems value="#{compraController.years}" var="d"
+                                          itemLabel="#{d}" itemValue="#{d}" />
+                            <f:ajax  />
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col-1" style="padding: 0px !important; margin-left:30px;">
+                        <h:commandButton  value="Buscar" immediate="true" class="btn btn-info"
+                                          action="#{compraController.updateGraph}">
+                            
+                        </h:commandButton>
+                    </div>
+                </div>
+                <div style="overflow: auto; max-height: 400px;">
+                     <gc:googleChart id="graphActual" model="#{compraController.chartModelCurrentYear}" height="400px" width="800px" />            
+                </div>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
