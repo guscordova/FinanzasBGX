@@ -7,6 +7,7 @@ import jsf.util.PaginationHelper;
 import session.VentaFacade;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -169,11 +170,14 @@ public class VentaController implements Serializable {
         List<VentaMes> totalSales = this.getFacade().getMonthSales(Integer.parseInt(currentYear), -1);
         chartModelCurrentYear.addColumn(new Column(Column.JavaScriptType.string, "Mes"));
         chartModelCurrentYear.addColumn(new Column(Column.JavaScriptType.number, "Ventas"));
+        
+        DecimalFormat df = new DecimalFormat("#,###,###,###.##");
         int noOfRows = 2;
         for(VentaMes n: totalSales) {
             Row row = new Row(noOfRows);
             row.addEntry("'" + n.getMes() + "'");
-            row.addEntry(String.valueOf(n.getTotal()));
+            
+            row.addEntry("{ v: " + String.valueOf(n.getTotal()) + ", f: '$" + df.format(n.getTotal()) + "'}");
             chartModelCurrentYear.addRow(row);
         }
         

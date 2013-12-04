@@ -1,6 +1,6 @@
 package jsf;
 
-import entities.Componente;
+import dto.CompraMes;
 import entities.Compra;
 import jsf.util.JsfUtil;
 import jsf.util.PaginationHelper;
@@ -8,6 +8,7 @@ import session.CompraFacade;
 
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,10 +25,14 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
-import session.ComponenteFacade;
-import utilidades.Column;
+//import utilidades.Column;
 import utilidades.CompraDB;
 import utilidades.Record;
+
+import nz.co.kevindoran.googlechartsjsf.DefaultGoogleChartModel;
+import nz.co.kevindoran.googlechartsjsf.GoogleChartModel;
+import nz.co.kevindoran.googlechartsjsf.Row;
+import nz.co.kevindoran.googlechartsjsf.Column;
 
 @Named("compraController")
 @SessionScoped
@@ -58,6 +63,11 @@ public class CompraController implements Serializable {
     private DataModel totalPurchasesMonth = null;
     private DataModel totalPurchasesComponent = null;
     private DataModel totalPurchasesSupplier = null;
+    
+    private String graphViewCurrentYear;
+    private GoogleChartModel chartModelCurrentYear = new DefaultGoogleChartModel("LineChart");
+    private GoogleChartModel chartModelPastYears = new DefaultGoogleChartModel("LineChart");
+    
     @EJB
     private session.CompraFacade ejbFacade;
     
@@ -90,6 +100,7 @@ public class CompraController implements Serializable {
         this.componentViewCurrentSupplier = "-1";
         this.supplierViewCurrentComponent = "-1";
         this.supplierViewCurrentSupplier = "-1";
+        this.graphViewCurrentYear = Calendar.getInstance().get(Calendar.YEAR) + "";
     }
     
     @PostConstruct
@@ -110,6 +121,8 @@ public class CompraController implements Serializable {
         this.monthViewSearch = "Busqueda por año " + monthViewCurrentYear + ",   proveedor Todos, componente Todos";
         this.supplierViewSearch = "Busqueda entre " +  df.format(supplierViewStartDate) + " y " + df.format(supplierViewEndDate) + ",   proveedor Todos, componente Todos";
         this.componentViewSearch = "Busqueda entre " +  df.format(componentViewStartDate) + " y " + df.format(componentViewEndDate) + ",   proveedor Todos, componente Todos";
+    
+        loadGraphs(graphViewCurrentYear);
     }
 
     public String getMonthViewCurrentYear() {
@@ -283,6 +296,52 @@ public class CompraController implements Serializable {
         return "";
     }
     
+    /*
+     * Gráficas
+     */
+    
+    public String getGraphViewCurrentYear() {
+        return graphViewCurrentYear;
+    }
+    
+    public void setGraphViewCurrentYear(String graphViewCurrentYear) {
+        this.graphViewCurrentYear = graphViewCurrentYear;
+    }
+    
+     private void loadGraphs(String year) {
+         List<CompraMes> totalPurchases  = this.getFacade().getMonthPurchases(Integer.parseInt(year), 
+                                                    -1, 
+                                                    -1);
+
+        chartModelCurrentYear.addColumn(new Column(Column.JavaScriptType.string, "Mes"));
+        chartModelCurrentYear.addColumn(new Column(Column.JavaScriptType.number, "Compras"));
+        
+        DecimalFormat df = new DecimalFormat("#,###,###,###.##");
+        int noOfRows = 2;
+        for(CompraMes n: totalPurchases) {
+            Row row = new Row(noOfRows);
+            row.addEntry("'" + n.getMes() + "'");
+            
+            row.addEntry("{ v: " + String.valueOf(n.getTotal()) + ", f: '$" + df.format(n.getTotal()) + "'}");
+            chartModelCurrentYear.addRow(row);
+            
+        }
+        
+        chartModelCurrentYear.setOptions("title:'" + graphViewCurrentYear + "', displayAnnotations:false"); // Simply inserted as javascript.  
+
+    }
+     
+     public void updateGraph() {
+         chartModelCurrentYear = new DefaultGoogleChartModel("LineChart");
+         loadGraphs(graphViewCurrentYear);
+     }
+     
+     public GoogleChartModel getChartModelCurrentYear() {
+        
+        return chartModelCurrentYear;
+     }
+    
+    
     
     
     
@@ -299,21 +358,27 @@ public class CompraController implements Serializable {
     
     /*
         Calcula total comprado por componente
-    */
+    *//*
     public List<Record> getTotalPurchaseComponent(){
         List<Record> l = this.compraDB.getTotalPurchaseComponent();
         this.totalPurchasesComponent = new ListDataModel(l);
         return l;
     }
-    
+    */
     /*
         Calcula total comprado por proveedor
-    */
+    *//*
     public List<Column> getTotalPurchaseSupplier(){
         List<Column> l = this.compraDB.getTotalPurchaseSupplier();
         this.totalPurchasesSupplier = new ListDataModel(l);
         return l;
     }
+    */
+    /*
+     Gráficas
+     */
+   
+    
 
     public Compra getSelected() {
         if (current == null) {
