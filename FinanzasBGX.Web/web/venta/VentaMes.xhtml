@@ -43,23 +43,23 @@
                 <h:outputText id="searchText" style="font-size: 13.6px" class="text-success"
                               value="#{ventaController.monthViewSearch}"/>
                  <div style="overflow: auto; max-height: 400px;">
-                <h:dataTable id="dtSalesMonth" class="table table-striped"
-                             value="#{ventaController.totalSalesMonth}" 
-                             var="item" cellpadding="2" cellspacing="0">
-                        <h:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundle.ListSalesMonth_mes}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.mes}"/>
-                        </h:column>
-                        <h:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundle.ListSalesMonth_total}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.total}">
-                                <f:convertNumber type="currency" currencySymbol="$ " />
-                            </h:outputText>
-                        </h:column>
+                    <h:dataTable id="dtSalesMonth" class="table table-striped"
+                                 value="#{ventaController.totalSalesMonth}" 
+                                 var="item" cellpadding="2" cellspacing="0">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.ListSalesMonth_mes}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.mes}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.ListSalesMonth_total}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.total}">
+                                    <f:convertNumber type="currency" currencySymbol="$ " />
+                                </h:outputText>
+                            </h:column>
                     </h:dataTable>
                  </div>
             </h:form>

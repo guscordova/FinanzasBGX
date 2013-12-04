@@ -22,7 +22,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-//import javax.faces.event.ValueChangeEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
@@ -30,8 +30,8 @@ import nz.co.kevindoran.googlechartsjsf.DefaultGoogleChartModel;
 import nz.co.kevindoran.googlechartsjsf.GoogleChartModel;
 import nz.co.kevindoran.googlechartsjsf.Column;
 import nz.co.kevindoran.googlechartsjsf.Row;
-//import utilidades.Column;
 import utilidades.Record;
+import java.text.DecimalFormat;
 
 @Named("ventaController")
 @SessionScoped
@@ -306,11 +306,14 @@ public class VentaController implements Serializable {
         List<VentaMes> totalSales = this.getFacade().getMonthSales(cal1.get(Calendar.YEAR), -1);
         chartModelCurrentYear.addColumn(new Column(Column.JavaScriptType.string, "Mes"));
         chartModelCurrentYear.addColumn(new Column(Column.JavaScriptType.number, "Ventas"));
+        
+        DecimalFormat df = new DecimalFormat("#,###,###,###.##");
         int noOfRows = 2;
         for(VentaMes n: totalSales) {
             Row row = new Row(noOfRows);
             row.addEntry("'" + n.getMes() + "'");
-            row.addEntry(String.valueOf(n.getTotal()));
+            
+            row.addEntry("{ v: " + String.valueOf(n.getTotal()) + ", f: '$" + df.format(n.getTotal()) + "'}");
             chartModelCurrentYear.addRow(row);
         }
         
