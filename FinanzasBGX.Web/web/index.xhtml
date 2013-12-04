@@ -47,7 +47,9 @@
                         </div>
                         <div class="row">
                             <div class="col-4 text-right">
-                                <h:outputText value="$ #{ventaController.totalSalesYear}"/>
+                                <h:outputText value="#{ventaController.totalSalesYear}">
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
                             </div>
                             <div class="col-4 text-right divDerechoIndicador">
                                <h:outputText value="$ #{compraController.totalPurchasesYear}"/>
@@ -65,10 +67,14 @@
                         </div>
                         <div class="row">
                             <div class="col-4 text-right">
-                                <h:outputText class="text-right" value="$ #{ventaController.totalSalesYear}"/>
+                                <h:outputText class="text-right" value="#{ventaController.totalSalesYear}">
+                                    <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
                             </div>
                             <div class="col-4 text-right divDerechoIndicador">
-                               <h:outputText class="text-right" value="$ #{ventaController.totalSalesYear}"/>
+                               <h:outputText class="text-right" value="#{ventaController.totalSalesYear}">
+                                   <f:convertNumber type="currency" currencySymbol="$" />
+                                </h:outputText>
                             </div>
                         </div>
                     </div>
