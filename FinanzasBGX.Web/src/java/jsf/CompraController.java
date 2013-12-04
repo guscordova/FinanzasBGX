@@ -63,6 +63,7 @@ public class CompraController implements Serializable {
     private DataModel totalPurchasesSupplier = null;
     
     private String graphViewCurrentYear;
+    private String graphYear;
     private GoogleChartModel chartModelCurrentYear = new DefaultGoogleChartModel("LineChart");
     private GoogleChartModel chartModelPastYears = new DefaultGoogleChartModel("LineChart");
     
@@ -307,6 +308,10 @@ public class CompraController implements Serializable {
         this.graphViewCurrentYear = graphViewCurrentYear;
     }
     
+    public String getGraphYear() {
+        return graphYear;
+    }
+    
     private void loadGraphMonths(String year) {
          List<CompraMes> totalPurchases  = this.getFacade().getMonthPurchases(Integer.parseInt(year), 
                                                     -1, 
@@ -329,7 +334,7 @@ public class CompraController implements Serializable {
         chartModelCurrentYear.setOptions("title:'" + graphViewCurrentYear + "', displayAnnotations:false"); // Simply inserted as javascript.  
         
         
-        //this.getFacade().getTotalPurchasesYear(Calendar.getInstance().get(Calendar.YEAR));
+        this.graphYear = year;
     }
     
     private void loadGraphYears( ) {
