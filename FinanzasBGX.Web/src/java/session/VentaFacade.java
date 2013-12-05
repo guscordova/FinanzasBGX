@@ -73,13 +73,16 @@ public class VentaFacade extends AbstractFacade<Venta> {
         List<String> years = new ArrayList<String>();
         int maxYear = Calendar.getInstance().get(Calendar.YEAR);
         int minYear = Calendar.getInstance().get(Calendar.YEAR);
-        for (Venta c : findAll()) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(c.getFecCobro());
-            if (cal.get(Calendar.YEAR) > maxYear)  
-                maxYear = cal.get(Calendar.YEAR);
-            if (cal.get(Calendar.YEAR) < minYear)  
-                minYear = cal.get(Calendar.YEAR);
+        for (Venta v : findAll()) {
+            if (v.getEstatus() != 0 && v.getFecCobro() != null && 
+                    v.getOrdenId().getEstatusId().getId() != 1 && v.getOrdenId().getEstatusId().getId() != 4) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(v.getFecCobro());
+                if (cal.get(Calendar.YEAR) > maxYear)  
+                    maxYear = cal.get(Calendar.YEAR);
+                if (cal.get(Calendar.YEAR) < minYear)  
+                    minYear = cal.get(Calendar.YEAR);
+            }
         }
         while (maxYear >= minYear) {
             years.add(maxYear + "");
@@ -94,10 +97,13 @@ public class VentaFacade extends AbstractFacade<Venta> {
     public double getTotalSalesYear(int year) {
         double salesSum = 0;
         for (Venta v : findAll()) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(v.getFecCobro());
-            if (cal.get(Calendar.YEAR) == year) {
-                salesSum += v.getMonto() * v.getCantidad();
+            if (v.getEstatus() != 0 && v.getFecCobro() != null && 
+                    v.getOrdenId().getEstatusId().getId() != 1 && v.getOrdenId().getEstatusId().getId() != 4) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(v.getFecCobro());
+                if (cal.get(Calendar.YEAR) == year) {
+                    salesSum += v.getMonto() * v.getCantidad();
+                }
             }
         }
         return salesSum;
@@ -107,10 +113,13 @@ public class VentaFacade extends AbstractFacade<Venta> {
         double salesSum = 0;
         int year = Calendar.getInstance().get(Calendar.YEAR);
         for (Venta v : findAll()) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(v.getFecCobro());
-            if (cal.get(Calendar.YEAR) == year && cal.get(Calendar.MONTH) == month) {
-                salesSum += v.getMonto() * v.getCantidad();
+            if (v.getEstatus() != 0 && v.getFecCobro() != null && 
+                    v.getOrdenId().getEstatusId().getId() != 1 && v.getOrdenId().getEstatusId().getId() != 4) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(v.getFecCobro());
+                if (cal.get(Calendar.YEAR) == year && cal.get(Calendar.MONTH) == month) {
+                    salesSum += v.getMonto() * v.getCantidad();
+                }
             }
         }
         return salesSum;
@@ -137,15 +146,18 @@ public class VentaFacade extends AbstractFacade<Venta> {
         salesSum.add(new VentaMes ("Noviembre"));
         salesSum.add(new VentaMes ("Diciembre"));
         for (Venta v : findAll()) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(v.getFecCobro());
-            if (cal.get(Calendar.YEAR) == year) {
-                Cliente cliente = v.getOrdenId().getClienteId();
-                if (distributor == -1 || cliente.getId() == distributor) 
-                {
-                    VentaMes m = salesSum.get(cal.get(Calendar.MONTH));
-                    double total = v.getMonto() * v.getCantidad();
-                    m.setTotal(total + m.getTotal());
+            if (v.getEstatus() != 0 && v.getFecCobro() != null && 
+                    v.getOrdenId().getEstatusId().getId() != 1 && v.getOrdenId().getEstatusId().getId() != 4) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(v.getFecCobro());
+                if (cal.get(Calendar.YEAR) == year) {
+                    Cliente cliente = v.getOrdenId().getClienteId();
+                    if (distributor == -1 || cliente.getId() == distributor) 
+                    {
+                        VentaMes m = salesSum.get(cal.get(Calendar.MONTH));
+                        double total = v.getMonto() * v.getCantidad();
+                        m.setTotal(total + m.getTotal());
+                    }
                 }
             }
         }
@@ -158,30 +170,33 @@ public class VentaFacade extends AbstractFacade<Venta> {
     public List<VentaDistribuidor> getDistributorSales(Date startDate, Date endDate, int distributor) {
         List<VentaDistribuidor> salesAcum = new ArrayList<VentaDistribuidor>();
         for (Venta v : findAll()) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(v.getFecCobro());
-            if (cal.getTime().after(startDate) && cal.getTime().before(endDate)) {
-                Cliente cliente = v.getOrdenId().getClienteId();
-                if (distributor == -1 || cliente.getId() == distributor) {
-                    VentaDistribuidor distribuidor = null;
-                    for (VentaDistribuidor d : salesAcum) {
-                        if (d.getId() == cliente.getId())
-                        {
-                            distribuidor = d;
-                            break;
+            if (v.getEstatus() != 0 && v.getFecCobro() != null && 
+                    v.getOrdenId().getEstatusId().getId() != 1 && v.getOrdenId().getEstatusId().getId() != 4) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(v.getFecCobro());
+                if (cal.getTime().after(startDate) && cal.getTime().before(endDate)) {
+                    Cliente cliente = v.getOrdenId().getClienteId();
+                    if (distributor == -1 || cliente.getId() == distributor) {
+                        VentaDistribuidor distribuidor = null;
+                        for (VentaDistribuidor d : salesAcum) {
+                            if (d.getId() == cliente.getId())
+                            {
+                                distribuidor = d;
+                                break;
+                            }
                         }
+                        if (distribuidor == null)
+                        {
+                            distribuidor = new VentaDistribuidor();
+                            distribuidor.setId(cliente.getId());
+                            distribuidor.setDistribuidor(cliente.getNombre() + " " + cliente.getAppaterno() + " " + cliente.getApmaterno());
+                            distribuidor.setTotal(v.getCantidad() * v.getMonto());
+                            salesAcum.add(distribuidor);
+                        }
+                        else 
+                            distribuidor.setTotal((v.getCantidad() * v.getMonto()) + distribuidor.getTotal());
                     }
-                    if (distribuidor == null)
-                    {
-                        distribuidor = new VentaDistribuidor();
-                        distribuidor.setId(cliente.getId());
-                        distribuidor.setDistribuidor(cliente.getNombre() + " " + cliente.getAppaterno() + " " + cliente.getApmaterno());
-                        distribuidor.setTotal(v.getCantidad() * v.getMonto());
-                        salesAcum.add(distribuidor);
-                    }
-                    else 
-                        distribuidor.setTotal((v.getCantidad() * v.getMonto()) + distribuidor.getTotal());
-                    }
+                }
             }
         }
         return salesAcum;
@@ -224,19 +239,22 @@ public class VentaFacade extends AbstractFacade<Venta> {
             }
         }
         for (Venta v : findAll()) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(v.getFecCobro());
-            if (cal.getTime().after(startDate) && cal.getTime().before(endDate)) {
-                Cliente cliente = v.getOrdenId().getClienteId();
-                if (distributor == -1 || cliente.getId() == distributor) 
-                {
-                    VentaMes sale = new VentaMes();
-                    for(VentaMes m: salesSum) {
-                        if (m.getMonth() == cal.get(Calendar.MONTH) && m.getYear() == cal.get(Calendar.YEAR))
-                            sale = m;
+            if (v.getEstatus() != 0 && v.getFecCobro() != null && 
+                    v.getOrdenId().getEstatusId().getId() != 1 && v.getOrdenId().getEstatusId().getId() != 4) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(v.getFecCobro());
+                if (cal.getTime().after(startDate) && cal.getTime().before(endDate)) {
+                    Cliente cliente = v.getOrdenId().getClienteId();
+                    if (distributor == -1 || cliente.getId() == distributor) 
+                    {
+                        VentaMes sale = new VentaMes();
+                        for(VentaMes m: salesSum) {
+                            if (m.getMonth() == cal.get(Calendar.MONTH) && m.getYear() == cal.get(Calendar.YEAR))
+                                sale = m;
+                        }
+                        double total = v.getMonto() * v.getCantidad();
+                        sale.setTotal(total + sale.getTotal());
                     }
-                    double total = v.getMonto() * v.getCantidad();
-                    sale.setTotal(total + sale.getTotal());
                 }
             }
         }
@@ -258,56 +276,61 @@ public class VentaFacade extends AbstractFacade<Venta> {
         return "Todos";
     }
     
-   
-    /*
-       Comparar distribuidores (auxiliar)
-    */
-    public double getDistributorSalesById(int year, Integer distributorID){
-        Cliente c = this.CById(distributorID);
-        double sum = 0;
-        //  Para cada distribuidor (cliente) recorremos sus ordenes, y por cada
-        //  orden recorremos las ventas filtradas por año
-        for(Orden o : c.getOrdenCollection()){
-            for(Venta v : o.getVentaCollection()){
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(v.getFecCobro());
-                if (cal.get(Calendar.YEAR) == year) {
-                    double total = v.getCantidad() * v.getMonto();
-                    sum += total;
-                }
-            }
-        }
-        return sum;
-    }
-    
-    /*
-        Comparar distribuidores
-    */
-    public double compareDistributorSales(int year, Integer dist1, Integer dist2){
-        //  Calculamos las ventas totales de cada uno y obtenemos su diferencia
-        double c1sum = getDistributorSalesById(year, dist1);
-        double c2sum = getDistributorSalesById(year, dist2);
-        return c1sum - c2sum;
-    }
-
     /*
         Calcula pendiente por cobrar total
     */
-    public double getPendienteCobrarAnual(int year) {
+    public double getPendienteCobrarAnual() {
         double orderSum = 0;
+        double saleSum = 0;
         for (Orden o : this.O()) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(o.getFecAlta());
-            if (cal.get(Calendar.YEAR) == year) {
+            if (o.getEstatusId().getId() != 1 && o.getEstatusId().getId() != 4) {
                 orderSum += o.getTotalPago();
                 //  Ahora vemos los pagos que han sido realizados a esta orden
                 //  y los descontamos al total
                 for(Venta v : o.getVentaCollection()){
-                    orderSum -= v.getCantidad() * v.getMonto();
+                    if (v.getEstatus() != 0 && v.getFecCobro() != null)
+                        saleSum += v.getCantidad() * v.getMonto();
                 }
             }
         }
-        return orderSum;
+        return orderSum - saleSum;
+    }
+    
+    public List<VentaDistribuidor> getPendienteCobrar(int idDistributor) {
+        List<VentaDistribuidor> pendientes = new ArrayList<VentaDistribuidor>();
+        for (Orden o : this.O()) {
+            if (idDistributor == -1 || o.getClienteId().getId() == idDistributor) {
+                if (o.getEstatusId().getId() != 1 && o.getEstatusId().getId() != 4) {
+                    double saleSum = 0;
+                    for(Venta v : o.getVentaCollection()){
+                        if (v.getEstatus() != 0 && v.getFecCobro() != null)
+                            saleSum += v.getCantidad() * v.getMonto();
+                    }
+                    double difference = o.getTotalPago() - saleSum;
+                    if (difference != 0) {
+                        VentaDistribuidor pendiente = null;
+                        for (VentaDistribuidor p : pendientes) {
+                            if (p.getId() == o.getClienteId().getId())
+                            {
+                                pendiente = p;
+                                break;
+                            }
+                        }
+                        if (pendiente == null)
+                        {
+                            pendiente = new VentaDistribuidor();
+                            pendiente.setId(o.getClienteId().getId());
+                            pendiente.setDistribuidor(o.getClienteId().getNombre() + " " + o.getClienteId().getAppaterno() + " " + o.getClienteId().getApmaterno());
+                            pendiente.setTotal(difference);
+                            pendientes.add(pendiente);
+                        }
+                        else 
+                            pendiente.setTotal(difference + pendiente.getTotal());
+                    }
+                }
+            }
+        }
+        return pendientes;
     }
     
     /*
@@ -315,7 +338,7 @@ public class VentaFacade extends AbstractFacade<Venta> {
     */
     public NumericTableSet getPendienteCobrarDistribuidorTable(int year) {
         NumericTableSet acumOrder = new NumericTableSet();
-        for (Orden o : this.O()) {
+        /*for (Orden o : this.O()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(o.getFecAlta());
             if (cal.get(Calendar.YEAR) == year) {
@@ -330,7 +353,7 @@ public class VentaFacade extends AbstractFacade<Venta> {
                 }
                 acumOrder.addValue(key, total);
             }
-        }
+        }*/
         //  Realiza la sumatoria de los totales de las ordenesde cada uno de los distribuidores
         return acumOrder;
     }
@@ -341,7 +364,7 @@ public class VentaFacade extends AbstractFacade<Venta> {
    public List<Record> getPendienteCobrarDistribuidor(int year) {
         NumericTreeRow table = this.getPendienteCobrarDistribuidorTable(year).getSumRow();
         List<Record> records = new ArrayList<>();
-        for(Column c : table.getDescendingColumns()){
+        /*for(Column c : table.getDescendingColumns()){
             //  Separamos el id del nombre del cliente
             String[] ls = c.name.split(" ");
             int lsn = ls[0].length();
@@ -349,7 +372,7 @@ public class VentaFacade extends AbstractFacade<Venta> {
                                     c.name.substring(lsn + 1),
                                     c.value);
             records.add(rcd);
-        }
+        }*/
         return records;
     }
     
@@ -358,7 +381,7 @@ public class VentaFacade extends AbstractFacade<Venta> {
     */
     public double getPendienteProducirYear(int year) {
         double orderSum = 0;
-        for (Orden o : this.O()) {
+        /*for (Orden o : this.O()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(o.getFecAlta());
             if (cal.get(Calendar.YEAR) == year) {
@@ -368,7 +391,7 @@ public class VentaFacade extends AbstractFacade<Venta> {
                     orderSum = orderSum + o.getTotalPago();
                 }
             }
-        }
+        }*/
         return orderSum;
     }
 }

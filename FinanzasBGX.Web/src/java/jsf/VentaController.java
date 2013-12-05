@@ -56,6 +56,7 @@ public class VentaController implements Serializable {
     
     private double totalSalesYear = 0.0;
     private double totalSalesActualMonth = 0.0;
+    
     private DataModel totalSalesMonth = null;
     private DataModel totalSalesDistributorYear = null;
     private DataModel totalSalesDistributorCompare = null;
@@ -66,9 +67,14 @@ public class VentaController implements Serializable {
     private GoogleChartModel chartModelPastYears = new DefaultGoogleChartModel("LineChart");
     private String graphYear;
     private String graphViewCurrentYear;
+    
     @EJB
     private session.VentaFacade ejbFacade;
     
+    private double pendienteCobrarAnual = 0.0;
+    private String pendienteCobrarViewCurrentDistributor;
+    private String pendienteCobrarViewSearch;
+    private DataModel pendienteCobrarDistribuidor = null;
     
     
     
@@ -78,8 +84,7 @@ public class VentaController implements Serializable {
     private DataModel items = null;
     private PaginationHelper pagination;
     private int selectedItemIndex;
-    private double pendienteCobrarAnual = 0.0;
-    private DataModel pendienteCobrarDistribuidor = null;
+    
     
     public VentaController() {
         this.monthViewCurrentYear = Calendar.getInstance().get(Calendar.YEAR) + "";
@@ -98,6 +103,8 @@ public class VentaController implements Serializable {
         this.compareViewCurrentDistributor2 = "-1";
         
         this.graphViewCurrentYear = Calendar.getInstance().get(Calendar.YEAR) + "";
+        
+        this.pendienteCobrarViewCurrentDistributor = "-1";
     }
     
     @PostConstruct
@@ -120,6 +127,9 @@ public class VentaController implements Serializable {
         this.monthViewSearch = "Busqueda por año " + monthViewCurrentYear + ", distribuidor Todos";
         this.distributorViewSearch = "Busqueda entre " +  df.format(distributorViewStartDate) + " y " + df.format(distributorViewEndDate) + ", distribuidor Todos";
         this.compareViewSearch = "Busqueda entre " +  df.format(compareViewStartDate) + " y " + df.format(compareViewEndDate) + ", comparando el distribuidor Todos con el distribuidor Todos";
+        
+        this.pendienteCobrarDistribuidor = new ListDataModel(this.getFacade().getPendienteCobrar(-1));
+        this.pendienteCobrarViewSearch = "Busqueda por distribuidor Todos";        
         
         loadGraphMonths(graphViewCurrentYear);
         loadGraphYears();
@@ -172,6 +182,14 @@ public class VentaController implements Serializable {
     public String getCompareViewSearch() {
         return compareViewSearch;
     }
+
+    public String getPendienteCobrarViewCurrentDistributor() {
+        return pendienteCobrarViewCurrentDistributor;
+    }
+
+    public String getPendienteCobrarViewSearch() {
+        return pendienteCobrarViewSearch;
+    }
     
     public void setMonthViewCurrentYear(String monthViewCurrentYear){
         this.monthViewCurrentYear = monthViewCurrentYear;
@@ -208,6 +226,10 @@ public class VentaController implements Serializable {
     public void setCompareViewCurrentDistributor2(String compareViewCurrentDistributor2) {
         this.compareViewCurrentDistributor2 = compareViewCurrentDistributor2;
     }
+
+    public void setPendienteCobrarViewCurrentDistributor(String pendienteCobrarViewCurrentDistributor) {
+        this.pendienteCobrarViewCurrentDistributor = pendienteCobrarViewCurrentDistributor;
+    }
     
     public List<String> getYears() {
         this.years = this.getFacade().getYears();
@@ -225,6 +247,11 @@ public class VentaController implements Serializable {
     public double getTotalSalesActualMonth(){
         this.totalSalesActualMonth  = this.getFacade().getTotalSalesActualMonth(Calendar.getInstance().get(Calendar.MONTH));
         return this.totalSalesActualMonth;
+    }
+    
+    public double getPendienteCobrarAnual(){
+        this.pendienteCobrarAnual = this.getFacade().getPendienteCobrarAnual();
+        return this.pendienteCobrarAnual;
     }
 
     public DataModel getTotalSalesMonth(){
@@ -245,6 +272,10 @@ public class VentaController implements Serializable {
     
     public DataModel getTotalDifference() {
         return totalDifference;
+    }
+    
+    public DataModel getPendienteCobrarDistribuidor() {
+        return pendienteCobrarDistribuidor;
     }
     
     public String searchMonth()
@@ -284,21 +315,22 @@ public class VentaController implements Serializable {
         return "";
     }
 
-    /*
-        Pendiente por cobrar
-    */
-    public double getPendienteCobrarAnual(){
-        Calendar cal1 = Calendar.getInstance();
-        this.pendienteCobrarAnual = this.getFacade().getPendienteCobrarAnual(cal1.get(Calendar.YEAR));
-        return this.pendienteCobrarAnual;
+    public String searchPendienteCobrar()
+    {
+        this.pendienteCobrarDistribuidor = new ListDataModel(this.getFacade().getPendienteCobrar(Integer.parseInt(pendienteCobrarViewCurrentDistributor)));
+        this.pendienteCobrarViewSearch = "Busqueda por distribuidor " + this.getFacade().getDistributorNameById(Integer.parseInt(pendienteCobrarViewCurrentDistributor));        
+        return "";
     }
     
-    public List<Record> getPendienteCobrarDistribuidor(){
-        Calendar cal1 = Calendar.getInstance();
-        List<Record> l = this.getFacade().getPendienteCobrarDistribuidor(cal1.get(Calendar.YEAR));
-        this.pendienteCobrarDistribuidor = new ListDataModel(l);
-        return l;
-    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     //
     
