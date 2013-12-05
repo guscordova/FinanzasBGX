@@ -65,6 +65,7 @@ public class VentaController implements Serializable {
     
     private GoogleChartModel chartModelCurrentYear = new DefaultGoogleChartModel("LineChart");
     private GoogleChartModel chartModelPastYears = new DefaultGoogleChartModel("LineChart");
+    private String graphYear;
     private String graphViewCurrentYear;
     
     @EJB
@@ -345,6 +346,10 @@ public class VentaController implements Serializable {
         this.graphViewCurrentYear = graphViewCurrentYear;
     }
     
+    public String getGraphYear() {
+        return graphYear;
+    }
+    
     private void loadGraphMonths(String year) {
         List<VentaMes> totalSales = this.getFacade().getMonthSales(Integer.parseInt(year), -1);
         chartModelCurrentYear.addColumn(new Column(Column.JavaScriptType.string, "Mes"));
@@ -361,6 +366,7 @@ public class VentaController implements Serializable {
         }
         
         chartModelCurrentYear.setOptions("'title':'" + year + "', 'displayAnnotations':false"); // Simply inserted as javascript.
+        this.graphYear = year;
     }
     
     private void loadGraphYears( ) {

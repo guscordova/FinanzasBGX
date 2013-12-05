@@ -31,6 +31,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "OrdenModelo.findByCantidad", query = "SELECT o FROM OrdenModelo o WHERE o.cantidad = :cantidad"),
     @NamedQuery(name = "OrdenModelo.findByFabricadas", query = "SELECT o FROM OrdenModelo o WHERE o.fabricadas = :fabricadas")})
 public class OrdenModelo implements Serializable {
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "entregadas")
+    private int entregadas;
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected OrdenModeloPK ordenModeloPK;
@@ -129,6 +133,14 @@ public class OrdenModelo implements Serializable {
     @Override
     public String toString() {
         return "entities.OrdenModelo[ ordenModeloPK=" + ordenModeloPK + " ]";
+    }
+
+    public int getEntregadas() {
+        return entregadas;
+    }
+
+    public void setEntregadas(int entregadas) {
+        this.entregadas = entregadas;
     }
     
 }
