@@ -334,7 +334,7 @@ public class CompraController implements Serializable {
         chartModelCurrentYear.setOptions("title:'" + graphViewCurrentYear + "', displayAnnotations:false"); // Simply inserted as javascript.  
         
         
-        this.graphYear = year;
+        this.graphYear = "Busqueda por año " + year;
     }
     
     private void loadGraphYears( ) {

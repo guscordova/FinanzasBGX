@@ -11,6 +11,7 @@ import java.io.Serializable;
  * @author robertogarza
  */
 public class CompraMes implements Serializable {
+    private int month;
     private String mes;
     private double total;
 
@@ -37,5 +38,13 @@ public class CompraMes implements Serializable {
 
     public void setTotal(double total) {
         this.total = total;
+    }
+    
+    public int getMonth() {
+        return month;
+    }
+    
+    public void setMonth(int month) {
+        this.month = month;
     }
 }

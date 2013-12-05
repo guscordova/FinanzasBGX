@@ -7,7 +7,7 @@
       xmlns:gc="http://nz.co.kevindoran/googlecharts">
     <ui:composition template="/template/ventas.xhtml">
         <ui:define name="title">
-            <h:outputText value="#{bundle.GraficaActualTitle} (#{ventaController.graphYear})" class="text-info"></h:outputText>
+            <h:outputText value="#{bundle.GraficaActualTitle}" class="text-info"></h:outputText>
         </ui:define>
         <ui:define name="body">
             <h:form>
@@ -29,6 +29,8 @@
                         </h:commandButton>
                     </div>
                 </div>
+                <h:outputText id="searchText" style="font-size: 13.6px" class="text-success"
+                              value="#{ventaController.graphYear}"/>
                 <div style="overflow: auto; max-height: 400px;">
                      <gc:googleChart id="graphActual" model="#{ventaController.chartModelCurrentYear}" height="400px" width="800px" />          
                 </div>

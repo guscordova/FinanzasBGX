@@ -390,7 +390,7 @@ public class VentaController implements Serializable {
         }
         
         chartModelCurrentYear.setOptions("'title':'" + year + "', 'displayAnnotations':false"); // Simply inserted as javascript.
-        this.graphYear = year;
+        this.graphYear = "Busqueda por año " + year;
     }
     
     private void loadGraphYears( ) {
