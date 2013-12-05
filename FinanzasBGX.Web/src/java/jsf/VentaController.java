@@ -76,8 +76,10 @@ public class VentaController implements Serializable {
     private String pendienteCobrarViewSearch;
     private DataModel pendienteCobrarDistribuidor = null;
     
-    
-    
+    private double pendienteProducirAnual = 0.0;
+    private String pendienteProducirViewCurrentModel;
+    private String pendienteProducirViewSearch;
+    private DataModel pendienteProducirComponent = null;
     
     
     private Venta current;
@@ -190,7 +192,15 @@ public class VentaController implements Serializable {
     public String getPendienteCobrarViewSearch() {
         return pendienteCobrarViewSearch;
     }
-    
+
+    public String getPendienteProducirViewCurrentModel() {
+        return pendienteProducirViewCurrentModel;
+    }
+
+    public String getPendienteProducirViewSearch() {
+        return pendienteProducirViewSearch;
+    }
+
     public void setMonthViewCurrentYear(String monthViewCurrentYear){
         this.monthViewCurrentYear = monthViewCurrentYear;
     }
@@ -230,7 +240,11 @@ public class VentaController implements Serializable {
     public void setPendienteCobrarViewCurrentDistributor(String pendienteCobrarViewCurrentDistributor) {
         this.pendienteCobrarViewCurrentDistributor = pendienteCobrarViewCurrentDistributor;
     }
-    
+
+    public void setPendienteProducirViewCurrentModel(String pendienteProducirViewCurrentModel) {
+        this.pendienteProducirViewCurrentModel = pendienteProducirViewCurrentModel;
+    }
+
     public List<String> getYears() {
         this.years = this.getFacade().getYears();
         return years;
@@ -252,6 +266,11 @@ public class VentaController implements Serializable {
     public double getPendienteCobrarAnual(){
         this.pendienteCobrarAnual = this.getFacade().getPendienteCobrarAnual();
         return this.pendienteCobrarAnual;
+    }
+    
+    public double getPendienteProducirAnual(){
+        this.pendienteProducirAnual = this.getFacade().getPendienteProducirAnual();
+        return this.pendienteProducirAnual;
     }
 
     public DataModel getTotalSalesMonth(){
@@ -276,6 +295,10 @@ public class VentaController implements Serializable {
     
     public DataModel getPendienteCobrarDistribuidor() {
         return pendienteCobrarDistribuidor;
+    }
+    
+    public DataModel getPendienteProducirComponent() {
+        return pendienteProducirComponent;
     }
     
     public String searchMonth()
@@ -322,9 +345,10 @@ public class VentaController implements Serializable {
         return "";
     }
     
-    
-    
-    
+    public String searchPendienteProducir() {
+        
+        return "";
+    }
     
     
     
@@ -405,6 +429,17 @@ public class VentaController implements Serializable {
 
         return chartModelPastYears;
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     public Venta getSelected() {
         if (current == null) {

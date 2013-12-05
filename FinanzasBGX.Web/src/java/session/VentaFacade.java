@@ -4,12 +4,15 @@
  */
 package session;
 
+import dto.ModeloPorProducir;
 import entities.Cliente;
 import entities.Estatus;
 import entities.Orden;
 import entities.Venta;
 import dto.VentaDistribuidor;
 import dto.VentaMes;
+import entities.OrdenModelo;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -333,65 +336,27 @@ public class VentaFacade extends AbstractFacade<Venta> {
         return pendientes;
     }
     
-    /*
-        Calcula pendiente por cobrar total por distribuidor (auxiliar)
-    */
-    public NumericTableSet getPendienteCobrarDistribuidorTable(int year) {
-        NumericTableSet acumOrder = new NumericTableSet();
-        /*for (Orden o : this.O()) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(o.getFecAlta());
-            if (cal.get(Calendar.YEAR) == year) {
-                Cliente cliente = o.getClienteId();
-                String distribuidorID = cliente.getId().toString();
-                String distributorName = cliente.getNombre() + " " + cliente.getAppaterno() + " " + cliente.getApmaterno();
-                String key = distribuidorID + " " + distributorName;
-                double total = o.getTotalPago();
-                //  Ahora a esta orden, le vamos a descontar todos los pagos realizados
-                for(Venta v : o.getVentaCollection()){
-                    total -= v.getCantidad() * v.getMonto();
-                }
-                acumOrder.addValue(key, total);
+    public double getPendienteProducirAnual() {
+        double producirSum = 0;
+        for (OrdenModelo o : this.OrdenModelo()) {
+            if (o.getOrden().getEstatusId().getId() != 1 && o.getOrden().getEstatusId().getId() != 4) {
+                producirSum += ((o.getCantidad() - o.getFabricadas()) * o.getModelo().getPrecioVenta());
             }
-        }*/
-        //  Realiza la sumatoria de los totales de las ordenesde cada uno de los distribuidores
-        return acumOrder;
+        }
+        return producirSum;
     }
     
-    /*
-        Calcula pendiente por cobrar total por distribuidor
-    */
-   public List<Record> getPendienteCobrarDistribuidor(int year) {
-        NumericTreeRow table = this.getPendienteCobrarDistribuidorTable(year).getSumRow();
-        List<Record> records = new ArrayList<>();
-        /*for(Column c : table.getDescendingColumns()){
-            //  Separamos el id del nombre del cliente
-            String[] ls = c.name.split(" ");
-            int lsn = ls[0].length();
-            Record rcd = new Record(Integer.parseInt(ls[0]), 
-                                    c.name.substring(lsn + 1),
-                                    c.value);
-            records.add(rcd);
-        }*/
-        return records;
+    public List<ModeloPorProducir> getPendienteProducir(int idModelo) {
+        List<ModeloPorProducir> porProducir = new ArrayList<ModeloPorProducir>();
+        
+        return porProducir;
     }
     
-    /*
-        Pendiente por producir total
-    */
-    public double getPendienteProducirYear(int year) {
-        double orderSum = 0;
-        /*for (Orden o : this.O()) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(o.getFecAlta());
-            if (cal.get(Calendar.YEAR) == year) {
-                Estatus estatus = o.getEstatusId();
-                //  5 = producido
-                if(estatus.getId() < 5){
-                    orderSum = orderSum + o.getTotalPago();
-                }
-            }
-        }*/
-        return orderSum;
+    public List<OrdenModelo> OrdenModelo(){
+        javax.persistence.criteria.CriteriaQuery cq = this.em.getCriteriaBuilder().createQuery();
+        Root<Orden> ordenModelo = cq.from(OrdenModelo.class);
+        cq.select(ordenModelo);
+        return this.em.createQuery(cq).getResultList();
     }
 }
+    

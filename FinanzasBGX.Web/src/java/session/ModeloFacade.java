@@ -27,4 +27,6 @@ public class ModeloFacade extends AbstractFacade<Modelo> {
         super(Modelo.class);
     }
     
+    
+    
 }
