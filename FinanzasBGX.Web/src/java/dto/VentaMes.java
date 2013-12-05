@@ -19,8 +19,9 @@ public class VentaMes implements Serializable {
     public VentaMes() {
     }
     
-    public VentaMes(String mes) {
+    public VentaMes(String mes, int month) {
         this.mes = mes;
+        this.month = month;
     }
     
     public VentaMes(String mes, double total) {

@@ -83,11 +83,6 @@ public class VentaController implements Serializable {
     private String pendienteProducirViewSearch;
     private List<ModeloPorProducir> pendienteProducirComponent = null;
     
-    private Venta current;
-    private DataModel items = null;
-    private PaginationHelper pagination;
-    private int selectedItemIndex;
-    
     public VentaController() {
         this.monthViewCurrentYear = Calendar.getInstance().get(Calendar.YEAR) + "";
         this.monthViewCurrentDistributor = "-1";
