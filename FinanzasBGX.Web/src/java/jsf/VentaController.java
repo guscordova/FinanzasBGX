@@ -133,6 +133,9 @@ public class VentaController implements Serializable {
         this.pendienteCobrarDistribuidor = new ListDataModel(this.getFacade().getPendienteCobrar(-1));
         this.pendienteCobrarViewSearch = "Busqueda por distribuidor Todos";        
         
+        this.pendienteProducirComponent = new ListDataModel(this.getFacade().getPendienteProducir(-1));
+        this.pendienteProducirViewSearch = "Busqueda por modelo Todos";
+        
         loadGraphMonths(graphViewCurrentYear);
         loadGraphYears();
     }
@@ -346,7 +349,8 @@ public class VentaController implements Serializable {
     }
     
     public String searchPendienteProducir() {
-        
+        this.pendienteProducirComponent = new ListDataModel(this.getFacade().getPendienteProducir(Integer.parseInt(pendienteProducirViewCurrentModel)));
+        this.pendienteProducirViewSearch = "Busqueda por modelo " + this.getFacade().getModelNameById(Integer.parseInt(pendienteProducirViewCurrentModel));   
         return "";
     }
     
