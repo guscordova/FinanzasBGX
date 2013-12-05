@@ -137,18 +137,18 @@ public class VentaFacade extends AbstractFacade<Venta> {
     */
     public List<VentaMes> getMonthSales(int year, int distributor) {
         List<VentaMes> salesSum = new ArrayList<VentaMes>();
-        salesSum.add(new VentaMes ("Enero"));
-        salesSum.add(new VentaMes ("Febrero"));
-        salesSum.add(new VentaMes ("Marzo"));
-        salesSum.add(new VentaMes ("Abril"));
-        salesSum.add(new VentaMes ("Mayo"));
-        salesSum.add(new VentaMes ("Junio"));
-        salesSum.add(new VentaMes ("Julio"));
-        salesSum.add(new VentaMes ("Agosto"));
-        salesSum.add(new VentaMes ("Septiembre"));
-        salesSum.add(new VentaMes ("Octubre"));
-        salesSum.add(new VentaMes ("Noviembre"));
-        salesSum.add(new VentaMes ("Diciembre"));
+        salesSum.add(new VentaMes ("Enero", 1));
+        salesSum.add(new VentaMes ("Febrero", 2));
+        salesSum.add(new VentaMes ("Marzo", 3));
+        salesSum.add(new VentaMes ("Abril", 4));
+        salesSum.add(new VentaMes ("Mayo", 5));
+        salesSum.add(new VentaMes ("Junio", 6));
+        salesSum.add(new VentaMes ("Julio", 7));
+        salesSum.add(new VentaMes ("Agosto", 8));
+        salesSum.add(new VentaMes ("Septiembre", 9));
+        salesSum.add(new VentaMes ("Octubre", 10));
+        salesSum.add(new VentaMes ("Noviembre", 11));
+        salesSum.add(new VentaMes ("Diciembre", 12));
         for (Venta v : findAll()) {
             if (v.getEstatus() != 0 && v.getFecCobro() != null && 
                     v.getOrdenId().getEstatusId().getId() != 1 && v.getOrdenId().getEstatusId().getId() != 4) {
