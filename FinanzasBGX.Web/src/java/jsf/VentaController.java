@@ -32,7 +32,6 @@ import nz.co.kevindoran.googlechartsjsf.DefaultGoogleChartModel;
 import nz.co.kevindoran.googlechartsjsf.GoogleChartModel;
 import nz.co.kevindoran.googlechartsjsf.Column;
 import nz.co.kevindoran.googlechartsjsf.Row;
-import utilidades.Record;
 import java.text.DecimalFormat;
 
 @Named("ventaController")
@@ -102,6 +101,8 @@ public class VentaController implements Serializable {
         this.graphViewCurrentYear = Calendar.getInstance().get(Calendar.YEAR) + "";
         
         this.pendienteCobrarViewCurrentDistributor = "-1";
+        
+        this.pendienteProducirViewCurrentModel = "-1";
     }
     
     @PostConstruct

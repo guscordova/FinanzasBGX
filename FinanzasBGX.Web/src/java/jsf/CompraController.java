@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +28,6 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
-import utilidades.CompraDB;
 
 import nz.co.kevindoran.googlechartsjsf.DefaultGoogleChartModel;
 import nz.co.kevindoran.googlechartsjsf.GoogleChartModel;
@@ -64,6 +64,11 @@ public class CompraController implements Serializable {
     private List<CompraComponentes> totalPurchasesComponent = null;
     private List<CompraProveedor> totalPurchasesSupplier = null;
     
+    private double totalInventarioAnual = 0.0;
+    private List<CompraComponentes> totalInventario = null;
+    private String inventarioViewCurrentComponent;
+    private String inventarioViewSearch;
+    
     private String graphViewCurrentYear;
     private String graphYear;
     private GoogleChartModel chartModelCurrentYear = new DefaultGoogleChartModel("LineChart");
@@ -90,6 +95,8 @@ public class CompraController implements Serializable {
         this.supplierViewCurrentComponent = "-1";
         this.supplierViewCurrentSupplier = "-1";
         this.graphViewCurrentYear = Calendar.getInstance().get(Calendar.YEAR) + "";
+        
+        inventarioViewCurrentComponent = "-1";
     }
     
     @PostConstruct
@@ -111,6 +118,11 @@ public class CompraController implements Serializable {
         this.supplierViewSearch = "Busqueda entre " +  df.format(supplierViewStartDate) + " y " + df.format(supplierViewEndDate) + ",   proveedor Todos, componente Todos";
         this.componentViewSearch = "Busqueda entre " +  df.format(componentViewStartDate) + " y " + df.format(componentViewEndDate) + ",   proveedor Todos, componente Todos";
     
+        
+        this.totalInventario = this.getFacade().getInventario(Integer.parseInt(inventarioViewCurrentComponent));
+        this.monthViewSearch = "Busqueda por componente Todos";
+        
+        
         loadGraphMonths(graphViewCurrentYear);
         loadGraphYears();
     }
@@ -166,6 +178,14 @@ public class CompraController implements Serializable {
     public String getSupplierViewCurrentSupplier() {
         return supplierViewCurrentSupplier;
     }
+
+    public String getInventarioViewCurrentComponent() {
+        return inventarioViewCurrentComponent;
+    }
+
+    public String getInventarioViewSearch() {
+        return inventarioViewSearch;
+    }
     
     public String getComponentViewSearch() {
         return componentViewSearch;
@@ -214,6 +234,10 @@ public class CompraController implements Serializable {
     public void setSupplierViewCurrentSupplier(String supplierViewCurrentSupplier) {
         this.supplierViewCurrentSupplier = supplierViewCurrentSupplier;
     }
+
+    public void setInventarioViewCurrentComponent(String inventarioViewCurrentComponent) {
+        this.inventarioViewCurrentComponent = inventarioViewCurrentComponent;
+    }
     
     public List<CompraMes> getTotalPurchasesMonth(){
         return totalPurchasesMonth;
@@ -225,6 +249,10 @@ public class CompraController implements Serializable {
     
     public List<CompraComponentes> getTotalPurchasesComponent(){
         return totalPurchasesComponent;
+    }
+    
+    public List<CompraComponentes> getTotalInventario(){
+        return totalInventario;
     }
     
     public List<String> getYears() {
@@ -246,6 +274,11 @@ public class CompraController implements Serializable {
     public double getTotalPurchasesActualMonth(){
         this.totalPurchasesActualMonth = this.getFacade().getTotalPurchasesActualMonth(Calendar.getInstance().get(Calendar.MONTH));
         return this.totalPurchasesActualMonth;
+    }
+    
+    public double getTotalInventarioAnual(){
+        this.totalInventarioAnual = 1;
+        return this.totalInventarioAnual;
     }
     
     public String searchMonth()
@@ -285,6 +318,14 @@ public class CompraController implements Serializable {
                                     ", componente " + this.getFacade().getComponentNameById(Integer.parseInt(componentViewCurrentComponent));
         return "";
     }
+    
+    public String searchInventario()
+    {
+        this.totalInventario = this.getFacade().getInventario(Integer.parseInt(inventarioViewCurrentComponent));
+        this.monthViewSearch = "Busqueda por componente " + this.getFacade().getComponentNameById(Integer.parseInt(inventarioViewCurrentComponent));
+        return "";
+    }
+    
     
     /*
      * Gráficas

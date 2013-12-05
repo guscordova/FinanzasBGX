@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
     <ui:composition template="/template/pendiente.xhtml">
         <ui:define name="title">
             <h:outputText value="#{bundle.PendienteProducirTitle}" class="text-info"></h:outputText>
@@ -12,9 +13,9 @@
             <h:form>
                 <div class="row" style="margin-top: -20px; margin-left: -5px">
                     <div class="col-2">
-                        <h:outputText value="Componente" />
+                        <h:outputText value="Modelo" />
                     </div>
-                    <div class="col-4" style="margin-left:-50px;">
+                    <div class="col-3" style="margin-left:-100px;">
                         <h:selectOneMenu value="#{ventaController.pendienteProducirViewCurrentModel}" style="width: 250px">               
                             <f:selectItem itemLabel="" itemValue="-1" noSelectionOption="true" />
                             <f:selectItems value="#{modeloController.models}" var="c"
@@ -23,7 +24,7 @@
                             <f:ajax  />
                         </h:selectOneMenu>
                     </div>
-                    <div class="col-1" style="padding: 0px !important">
+                    <div class="col-1" style="padding: 0px !important; margin-left: 15px">
                         <h:commandButton  value="Buscar" immediate="true" class="btn btn-info"
                                           action="#{ventaController.searchPendienteProducir}">
                             <f:ajax render="dtPendiente"/>
@@ -31,27 +32,21 @@
                         </h:commandButton>
                     </div>
                 </div>
-                <h:outputText id="searchText" style="font-size: 13.6px" class="text-success"
+                <h:outputText id="searchText" style="font-size: 13.6px; margin-left: 5px" class="text-success"
                               value="#{ventaController.pendienteProducirViewSearch}"/>
                  <div style="overflow: auto; max-height: 400px;">
-                    <h:dataTable id="dtPendiente" class="table table-striped"
-                                 value="#{ventaController.pendienteProducirComponent}" 
-                                 var="item" cellpadding="2" cellspacing="0">
-                            <h:column>
-                                <f:facet name="header">
-                                    <h:outputText value="#{bundle.ListPurchasesComponent_component}"/>
-                                </f:facet>
-                                <h:outputText value="#{item.modelo}"/>
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header">
-                                    <h:outputText value="#{bundle.ListPendienteProducir_total}"/>
-                                </f:facet>
-                                <h:outputText value="#{item.total}">
-                                    <f:convertNumber type="currency" currencySymbol="$ " />
-                                </h:outputText>
-                            </h:column>
-                    </h:dataTable>
+                     <p:dataTable id="dtPendiente" tableStyleClass="table table-striped"
+                             value="#{ventaController.pendienteProducirComponent}" 
+                             var="item">
+                        <p:column sortBy="modelo" headerText="#{bundle.ListPurchasesComponent_component}">
+                            <h:outputText value="#{item.modelo}"/>
+                        </p:column>
+                        <p:column sortBy="total" headerText="#{bundle.ListPendienteProducir_total}">
+                            <h:outputText value="#{item.total}">
+                                <f:convertNumber type="currency" currencySymbol="$ " />
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
                  </div>
             </h:form>
         </ui:define>

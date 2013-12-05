@@ -10,6 +10,8 @@ import dto.CompraProveedor;
 import entities.Componente;
 import entities.Compra;
 import entities.CompraComponente;
+import entities.Pedido;
+import entities.PedidoComponente;
 import entities.Proveedor;
 import entities.ProveedorComponente;
 import java.util.ArrayList;
@@ -21,10 +23,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.Root;
-import utilidades.Column;
-import utilidades.CompraDB;
-import utilidades.DateUtils;
-import utilidades.NumericTableSet;
 
 /**
  *
@@ -251,5 +249,65 @@ public class CompraFacade extends AbstractFacade<Compra> {
             }
         }
         return "Todos";
-    }    
+    }  
+    
+    
+    public List<CompraComponentes> getInventario(int idComponent) {
+        List<CompraComponentes> inventario = new ArrayList<CompraComponentes>();
+        for (Compra c : findAll()) {
+            if (c.getEstatus() == 1) {
+                for (CompraComponente cc : c.getCompraComponenteCollection()) {
+                    if (idComponent == - 1 || cc.getComponente().getId() == idComponent) {
+                        CompraComponentes componente = null;
+                        for (CompraComponentes com : inventario) {
+                            if (com.getId() == cc.getComponente().getId())
+                            {
+                                componente = com;
+                                break;
+                            }
+                        }
+                        if (componente == null) {
+                            componente = new CompraComponentes();
+                            componente.setId(cc.getComponente().getId());
+                            componente.setComponente(cc.getComponente().getNombre());
+                            componente.setCantidad(cc.getCantidad());
+                            inventario.add(componente);
+                        }
+                        else {
+                            componente.setCantidad(cc.getCantidad() + componente.getCantidad());
+                        }
+                    }
+                }
+            }
+        }
+        for (Pedido pedido : Pedido()) {
+            if (pedido.getEstatus() == 1) {
+                for (PedidoComponente pc : pedido.getPedidoComponenteCollection()) {
+                    if (idComponent == - 1 || pc.getComponente().getId() == idComponent) {
+                        CompraComponentes componente = null;
+                        for (CompraComponentes com : inventario) {
+                            if (com.getId() == pc.getComponente().getId())
+                            {
+                                componente = com;
+                                break;
+                            }
+                        }
+                        if (componente != null) {
+                            componente.setCantidad(componente.getCantidad() - pc.getCantidad());
+                            if (componente.getCantidad() <= 0) 
+                                inventario.remove(componente);
+                        }
+                    }
+                }
+            }
+        }
+        return inventario;
+    }
+    
+    public List<Pedido> Pedido(){
+        javax.persistence.criteria.CriteriaQuery cq = this.em.getCriteriaBuilder().createQuery();
+        Root<Pedido> pedido = cq.from(Pedido.class);
+        cq.select(pedido);
+        return this.em.createQuery(cq).getResultList();
+    }
 }

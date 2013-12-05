@@ -22,11 +22,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.Root;
-import utilidades.Column;
-import utilidades.DateUtils;
-import utilidades.NumericTableSet;
-import utilidades.NumericTreeRow;
-import utilidades.Record;
 
 /*
     Implementado:
@@ -397,5 +392,7 @@ public class VentaFacade extends AbstractFacade<Venta> {
         cq.select(ordenModelo);
         return this.em.createQuery(cq).getResultList();
     }
+    
+    
 }
     

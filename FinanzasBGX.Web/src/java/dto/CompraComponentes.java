@@ -14,6 +14,7 @@ public class CompraComponentes implements Serializable {
     private int id;
     private String componente;
     private double total;
+    private int cantidad;
 
     public int getId() {
         return id;
@@ -38,5 +39,12 @@ public class CompraComponentes implements Serializable {
     public double getTotal() {
         return total;
     }
-    
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
 }

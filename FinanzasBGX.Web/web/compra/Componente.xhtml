@@ -15,7 +15,7 @@
                     <div class="col-2">
                         <h:outputText value="Fecha inicial" />
                     </div>
-                    <div class="col-3" style="margin-top:-8px">
+                    <div class="col-3 calendar" style="margin-top:-8px">
                         <p:calendar id="startDate" value="#{compraController.componentViewStartDate}"
                                     pattern="dd/MM/yyyy" effect="slideDown" navigator="true"
                                     maxdate="#{compraController.componentViewEndDate}"
@@ -27,7 +27,7 @@
                     <div class="col-2" style="margin-left: -25px">
                         <h:outputText value="Fecha fin" />
                     </div>
-                    <div class="col-3" style="margin-top:-8px;">
+                    <div class="col-3 calendar" style="margin-top:-8px;">
                         <p:calendar id="endDate" value="#{compraController.componentViewEndDate}"
                                     pattern="dd/MM/yyyy" effect="slideDown" navigator="true"
                                     mindate="#{compraController.componentViewStartDate}"
