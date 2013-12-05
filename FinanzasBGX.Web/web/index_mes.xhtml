@@ -57,43 +57,7 @@
                                 </h:outputText>
                             </div>
                         </div>
-                    </div>
-                    <div class="divIndicadores">
-                        <div class="row">
-                            <div class="col-4">
-                                <h:outputText class="text-info" value="Pendiente por cobrar"/>
-                            </div>
-                            <div class="col-4 divDerechoIndicador">
-                                <h:outputText class="text-info" value="Pendiente por producir"/>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-4 text-right">
-                                <h:outputText class="text-right" value="#{ventaController.pendienteCobrarAnual}">
-                                    <f:convertNumber type="currency" currencySymbol="$ " />
-                                </h:outputText>
-                            </div>
-                            <div class="col-4 text-right divDerechoIndicador">
-                               <h:outputText class="text-right" value="#{ventaController.pendienteProducirAnual}">
-                                    <f:convertNumber type="currency" currencySymbol="$ " />
-                                </h:outputText>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="divIndicadores">
-                        <div class="row">
-                            <div class="col-4">
-                                <h:outputText class="text-info" value="Inventario"/>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-4 text-right">
-                                <h:outputText class="text-right" value="#{ventaController.totalSalesActualMonth}">
-                                    <f:convertNumber type="currency" currencySymbol="$ " />
-                                </h:outputText>
-                            </div>
-                        </div>
-                    </div>
+                    </div> 
                 </ui:insert>
             </div>
             </ui:define>
