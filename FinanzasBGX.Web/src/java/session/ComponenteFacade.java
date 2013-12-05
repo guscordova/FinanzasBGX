@@ -41,9 +41,7 @@ public class ComponenteFacade extends AbstractFacade<Componente> {
             components = findAll();
         else {
             for (Componente c : findAll()) {
-                Iterator<ProveedorComponente> it = c.getProveedorComponenteCollection().iterator();
-                while(it.hasNext()){
-                    ProveedorComponente pc = it.next();
+                for (ProveedorComponente pc : c.getProveedorComponenteCollection()) {
                     if (pc.getProveedor().getId() == idSupplier) 
                         components.add(c);
                 }

@@ -258,56 +258,59 @@ public class VentaFacade extends AbstractFacade<Venta> {
         return "Todos";
     }
     
-   
-    /*
-       Comparar distribuidores (auxiliar)
-    */
-    public double getDistributorSalesById(int year, Integer distributorID){
-        Cliente c = this.CById(distributorID);
-        double sum = 0;
-        //  Para cada distribuidor (cliente) recorremos sus ordenes, y por cada
-        //  orden recorremos las ventas filtradas por año
-        for(Orden o : c.getOrdenCollection()){
-            for(Venta v : o.getVentaCollection()){
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(v.getFecCobro());
-                if (cal.get(Calendar.YEAR) == year) {
-                    double total = v.getCantidad() * v.getMonto();
-                    sum += total;
-                }
-            }
-        }
-        return sum;
-    }
-    
-    /*
-        Comparar distribuidores
-    */
-    public double compareDistributorSales(int year, Integer dist1, Integer dist2){
-        //  Calculamos las ventas totales de cada uno y obtenemos su diferencia
-        double c1sum = getDistributorSalesById(year, dist1);
-        double c2sum = getDistributorSalesById(year, dist2);
-        return c1sum - c2sum;
-    }
-
     /*
         Calcula pendiente por cobrar total
     */
-    public double getPendienteCobrarAnual(int year) {
+    public double getPendienteCobrarAnual() {
         double orderSum = 0;
+        double saleSum = 0;
         for (Orden o : this.O()) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(o.getFecAlta());
-            if (cal.get(Calendar.YEAR) == year) {
+            if (o.getEstatusId().getId() != 4) {
                 orderSum += o.getTotalPago();
                 //  Ahora vemos los pagos que han sido realizados a esta orden
                 //  y los descontamos al total
                 for(Venta v : o.getVentaCollection()){
-                    orderSum -= v.getCantidad() * v.getMonto();
+                    saleSum += v.getCantidad() * v.getMonto();
                 }
             }
         }
-        return orderSum;
+        return saleSum - orderSum;
+    }
+    
+    public List<VentaDistribuidor> getPendienteCobrar(int idDistributor) {
+        List<VentaDistribuidor> pendientes = new ArrayList<VentaDistribuidor>();
+        for (Orden o : this.O()) {
+            if (idDistributor == -1 || o.getClienteId().getId() == idDistributor) {
+                if (o.getEstatusId().getId() != 4) {
+                    double saleSum = 0;
+                    for(Venta v : o.getVentaCollection()){
+                        saleSum += v.getCantidad() * v.getMonto();
+                    }
+                    double difference = Math.abs(saleSum - o.getTotalPago());
+                    if (difference != 0) {
+                        VentaDistribuidor pendiente = null;
+                        for (VentaDistribuidor p : pendientes) {
+                            if (p.getId() == o.getClienteId().getId())
+                            {
+                                pendiente = p;
+                                break;
+                            }
+                        }
+                        if (pendiente == null)
+                        {
+                            pendiente = new VentaDistribuidor();
+                            pendiente.setId(o.getClienteId().getId());
+                            pendiente.setDistribuidor(o.getClienteId().getNombre() + " " + o.getClienteId().getAppaterno() + " " + o.getClienteId().getApmaterno());
+                            pendiente.setTotal(difference);
+                            pendientes.add(pendiente);
+                        }
+                        else 
+                            pendiente.setTotal(difference + pendiente.getTotal());
+                    }
+                }
+            }
+        }
+        return pendientes;
     }
     
     /*

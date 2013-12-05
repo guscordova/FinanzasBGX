@@ -15,7 +15,7 @@
                         <h:outputText value="Distribuidor" />
                     </div>
                     <div class="col-4" style="margin-left:-50px;">
-                        <h:selectOneMenu value="#{ventaController.monthViewCurrentDistributor}" style="width: 250px">               
+                        <h:selectOneMenu value="#{ventaController.pendienteCobrarViewCurrentDistributor}" style="width: 250px">               
                             <f:selectItem itemLabel="" itemValue="-1" noSelectionOption="true" />
                             <f:selectItems value="#{clienteController.distributors}" var="d"
                                           itemLabel="#{d.nombre}" itemValue="#{d.id}" />
@@ -24,27 +24,27 @@
                     </div>
                     <div class="col-1" style="padding: 0px !important">
                         <h:commandButton  value="Buscar" immediate="true" class="btn btn-info"
-                                          action="#{ventaController.searchMonth}">
-                            <f:ajax render="dtSalesMonth"/>
+                                          action="#{ventaController.searchPendienteCobrar}">
+                            <f:ajax render="dtPendiente"/>
                             <f:ajax render="searchText"/>
                         </h:commandButton>
                     </div>
                 </div>
                 <h:outputText id="searchText" style="font-size: 13.6px" class="text-success"
-                              value="#{ventaController.monthViewSearch}"/>
+                              value="#{ventaController.pendienteCobrarViewSearch}"/>
                  <div style="overflow: auto; max-height: 400px;">
-                    <h:dataTable id="dtSalesMonth" class="table table-striped"
-                                 value="#{ventaController.totalSalesMonth}" 
+                    <h:dataTable id="dtPendiente" class="table table-striped"
+                                 value="#{ventaController.pendienteCobrarDistribuidor}" 
                                  var="item" cellpadding="2" cellspacing="0">
                             <h:column>
                                 <f:facet name="header">
-                                    <h:outputText value="#{bundle.ListSalesMonth_mes}"/>
+                                    <h:outputText value="#{bundle.ListSalesDistributor_distribuidor}"/>
                                 </f:facet>
-                                <h:outputText value="#{item.mes}"/>
+                                <h:outputText value="#{item.distribuidor}"/>
                             </h:column>
                             <h:column>
                                 <f:facet name="header">
-                                    <h:outputText value="#{bundle.ListSalesMonth_total}"/>
+                                    <h:outputText value="#{bundle.ListPendienteCobrar_total}"/>
                                 </f:facet>
                                 <h:outputText value="#{item.total}">
                                     <f:convertNumber type="currency" currencySymbol="$ " />

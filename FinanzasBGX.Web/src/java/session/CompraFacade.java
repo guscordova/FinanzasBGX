@@ -113,9 +113,7 @@ public class CompraFacade extends AbstractFacade<Compra> {
                         m.setTotal(c.getCostoTotal() + m.getTotal());
                     }
                     else {
-                        Iterator<CompraComponente> it = c.getCompraComponenteCollection().iterator();
-                        while(it.hasNext()){
-                            CompraComponente cc = it.next();
+                        for (CompraComponente cc : c.getCompraComponenteCollection()) {
                             if (cc.getComponente().getId() == component) {
                                 CompraMes m = purchasesSum.get(cal.get(Calendar.MONTH));
                                 m.setTotal(cc.getCantidad() * cc.getCosto() + m.getTotal());
@@ -157,9 +155,7 @@ public class CompraFacade extends AbstractFacade<Compra> {
                         }
                     }
                     else {
-                        Iterator<CompraComponente> it = c.getCompraComponenteCollection().iterator();
-                        while(it.hasNext()){
-                            CompraComponente cc = it.next();
+                        for (CompraComponente cc : c.getCompraComponenteCollection()) {
                             if (cc.getComponente().getId() == component) {
                                 if (proveedor == null) {
                                     proveedor = new CompraProveedor();
@@ -196,9 +192,7 @@ public class CompraFacade extends AbstractFacade<Compra> {
                             break;
                         }
                     }
-                    Iterator<CompraComponente> it = c.getCompraComponenteCollection().iterator();
-                    while(it.hasNext()){
-                        CompraComponente cc = it.next();
+                    for (CompraComponente cc : c.getCompraComponenteCollection()) {
                         if (component == - 1 || cc.getComponente().getId() == component) {
                             if (componente == null) {
                                 componente = new CompraComponentes();
