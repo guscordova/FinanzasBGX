@@ -39,7 +39,6 @@ public class ComponenteController implements Serializable {
         return getFacade().getComponents(idSupplier);
     }
     
-    
 
     
     

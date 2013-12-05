@@ -90,18 +90,18 @@ public class CompraFacade extends AbstractFacade<Compra> {
     
     public List<CompraMes> getMonthPurchases(int year, int supplier, int component) {
         List<CompraMes> purchasesSum = new ArrayList<CompraMes>();
-        purchasesSum.add(new CompraMes ("Enero"));
-        purchasesSum.add(new CompraMes ("Febrero"));
-        purchasesSum.add(new CompraMes ("Marzo"));
-        purchasesSum.add(new CompraMes ("Abril"));
-        purchasesSum.add(new CompraMes ("Mayo"));
-        purchasesSum.add(new CompraMes ("Junio"));
-        purchasesSum.add(new CompraMes ("Julio"));
-        purchasesSum.add(new CompraMes ("Agosto"));
-        purchasesSum.add(new CompraMes ("Septiembre"));
-        purchasesSum.add(new CompraMes ("Octubre"));
-        purchasesSum.add(new CompraMes ("Noviembre"));
-        purchasesSum.add(new CompraMes ("Diciembre"));
+        purchasesSum.add(new CompraMes ("Enero", 0));
+        purchasesSum.add(new CompraMes ("Febrero", 1));
+        purchasesSum.add(new CompraMes ("Marzo", 2));
+        purchasesSum.add(new CompraMes ("Abril", 3));
+        purchasesSum.add(new CompraMes ("Mayo", 4));
+        purchasesSum.add(new CompraMes ("Junio", 5));
+        purchasesSum.add(new CompraMes ("Julio", 6));
+        purchasesSum.add(new CompraMes ("Agosto", 7));
+        purchasesSum.add(new CompraMes ("Septiembre", 8));
+        purchasesSum.add(new CompraMes ("Octubre", 9));
+        purchasesSum.add(new CompraMes ("Noviembre", 10));
+        purchasesSum.add(new CompraMes ("Diciembre", 11));
         for (Compra c : findAll()) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(c.getFecPago());

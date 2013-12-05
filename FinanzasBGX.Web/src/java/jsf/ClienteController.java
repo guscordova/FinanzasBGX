@@ -36,7 +36,7 @@ public class ClienteController implements Serializable {
     }
     
     public List<Cliente> getDistributors() {
-        distributors = getFacade().getDistributors();
+        distributors = getFacade().findAll();
         return distributors;
     }
 
