@@ -55,11 +55,10 @@
                 </div>
                 <h:outputText id="searchText" style="font-size: 13.6px" class="text-success"
                               value="#{compraController.monthViewSearch}"/>
-                 <div style="overflow: auto; max-height: 400px;">
-                     <img src=""
+                <div style="overflow: auto; max-height: 400px;">
                 <p:dataTable id="dtPurchasesMonth" tableStyleClass="table table-striped"
                              value="#{compraController.totalPurchasesMonth}" 
-                             var="item" > <!-- cellpadding="2" cellspacing="0"> -->
+                             var="item" > 
                         <p:column sortBy="month" headerText="#{bundle.ListSalesMonth_mes}">                            
                             <h:outputText value="#{item.mes}"/>
                         </p:column>
