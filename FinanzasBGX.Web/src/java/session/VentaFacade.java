@@ -11,6 +11,7 @@ import entities.Orden;
 import entities.Venta;
 import dto.VentaDistribuidor;
 import dto.VentaMes;
+import entities.Modelo;
 import entities.OrdenModelo;
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -279,6 +280,20 @@ public class VentaFacade extends AbstractFacade<Venta> {
         return "Todos";
     }
     
+    public String getModelNameById(int idModelo) {
+        if (idModelo != -1) {
+            javax.persistence.criteria.CriteriaQuery cq = this.em.getCriteriaBuilder().createQuery();
+            Root<Modelo> modelo = cq.from(Modelo.class);
+            cq.select(modelo);
+            List<Modelo> modelos = this.em.createQuery(cq).getResultList();
+            for (Modelo m : modelos) {
+                if (m.getId() == idModelo)
+                    return m.getNombre();
+            }
+        }
+        return "Todos";
+    }
+    
     /*
         Calcula pendiente por cobrar total
     */
@@ -348,7 +363,31 @@ public class VentaFacade extends AbstractFacade<Venta> {
     
     public List<ModeloPorProducir> getPendienteProducir(int idModelo) {
         List<ModeloPorProducir> porProducir = new ArrayList<ModeloPorProducir>();
-        
+        for (OrdenModelo o : this.OrdenModelo()) {
+            if ((idModelo == -1 || o.getModelo().getId() == idModelo) && 
+                    o.getOrden().getEstatusId().getId() != 1 && o.getOrden().getEstatusId().getId() != 4) {
+                double difference = o.getCantidad() - o.getFabricadas();
+                if (difference > 0) {
+                    ModeloPorProducir producir = null;
+                    for (ModeloPorProducir p : porProducir) {
+                        if (p.getModelo().equals(o.getModelo().getNombre()))
+                        {
+                            producir = p;
+                            break;
+                        }
+                    }
+                    if (producir == null)
+                    {
+                        producir = new ModeloPorProducir();
+                        producir.setModelo(o.getModelo().getNombre());
+                        producir.setTotal(difference * o.getModelo().getPrecioVenta());
+                        porProducir.add(producir);
+                    }
+                    else 
+                        producir.setTotal((difference * o.getModelo().getPrecioVenta()) + producir.getTotal());
+                }
+            }
+        }
         return porProducir;
     }
     
