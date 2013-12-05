@@ -58,7 +58,7 @@ public class CompraController implements Serializable {
     private double totalPurchasesYear = 0.0;
     private double totalPurchasesActualMonth = 0.0;
     
-    private DataModel totalPurchasesMonth = null;
+    private List<CompraMes> totalPurchasesMonth = null;
     private DataModel totalPurchasesComponent = null;
     private DataModel totalPurchasesSupplier = null;
     
@@ -104,7 +104,7 @@ public class CompraController implements Serializable {
     
     @PostConstruct
     public void init() {
-        this.totalPurchasesMonth = new ListDataModel(this.getFacade().getMonthPurchases(
+        this.totalPurchasesMonth = (this.getFacade().getMonthPurchases(
                                                           Integer.parseInt(monthViewCurrentYear), 
                                                           Integer.parseInt(monthViewCurrentSupplier), 
                                                           Integer.parseInt(monthViewCurrentComponent)));
@@ -225,7 +225,7 @@ public class CompraController implements Serializable {
         this.supplierViewCurrentSupplier = supplierViewCurrentSupplier;
     }
     
-    public DataModel getTotalPurchasesMonth(){
+    public List<CompraMes> getTotalPurchasesMonth(){
         return totalPurchasesMonth;
     }
     
@@ -260,7 +260,7 @@ public class CompraController implements Serializable {
     
     public String searchMonth()
     {
-        this.totalPurchasesMonth = new ListDataModel(this.getFacade().getMonthPurchases(
+        this.totalPurchasesMonth = (this.getFacade().getMonthPurchases(
                                                           Integer.parseInt(monthViewCurrentYear), 
                                                           Integer.parseInt(monthViewCurrentSupplier), 
                                                           Integer.parseInt(monthViewCurrentComponent)));
