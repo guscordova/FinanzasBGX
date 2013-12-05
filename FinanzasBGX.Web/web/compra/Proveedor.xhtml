@@ -73,24 +73,18 @@
                 <h:outputText id="searchText" style="font-size: 13.6px" class="text-success" 
                               value="#{compraController.supplierViewSearch}"/>
                  <div style="overflow: auto; max-height: 350px;">
-                <h:dataTable id="dtPurchasesSupplier" class="table table-striped"
+                <p:dataTable id="dtPurchasesSupplier" tableStyleClass="table table-striped"
                              value="#{compraController.totalPurchasesSupplier}" 
-                             var="item" cellpadding="2" cellspacing="0">
-                        <h:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundle.ListPurchasesSupplier_supplier}"/>
-                            </f:facet>
+                             var="item">
+                        <p:column sortBy="proveedor" headerText="#{bundle.ListPurchasesSupplier_supplier}">
                             <h:outputText value="#{item.proveedor}"/>
-                        </h:column>
-                        <h:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundle.ListPurchasesMonth_total}"/>
-                            </f:facet>
+                        </p:column>
+                        <p:column sortBy="total" headerText="#{bundle.ListPurchasesMonth_total}">
                             <h:outputText value="#{item.total}">
                                 <f:convertNumber type="currency" currencySymbol="$ " />
                             </h:outputText>
-                        </h:column>
-                    </h:dataTable>
+                        </p:column>
+                    </p:dataTable>
                  </div>
             </h:form>
         </ui:define>
