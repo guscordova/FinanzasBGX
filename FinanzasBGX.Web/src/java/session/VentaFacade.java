@@ -293,7 +293,7 @@ public class VentaFacade extends AbstractFacade<Venta> {
                 }
             }
         }
-        return saleSum - orderSum;
+        return orderSum - saleSum;
     }
     
     public List<VentaDistribuidor> getPendienteCobrar(int idDistributor) {
@@ -306,7 +306,7 @@ public class VentaFacade extends AbstractFacade<Venta> {
                         if (v.getEstatus() != 0 && v.getFecCobro() != null)
                             saleSum += v.getCantidad() * v.getMonto();
                     }
-                    double difference = Math.abs(saleSum - o.getTotalPago());
+                    double difference = o.getTotalPago() - saleSum;
                     if (difference != 0) {
                         VentaDistribuidor pendiente = null;
                         for (VentaDistribuidor p : pendientes) {
