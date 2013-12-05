@@ -15,8 +15,9 @@ public class CompraMes implements Serializable {
     private String mes;
     private double total;
 
-     public CompraMes(String mes) {
+     public CompraMes(String mes, int month) {
         this.mes = mes;
+        this.month = month;
     }
     
     public CompraMes(String mes, double total) {
